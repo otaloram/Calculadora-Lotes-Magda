@@ -1,0 +1,162 @@
+<!-- ============ CHATBOT EAFP — pegar antes de </body> (o en el pie con un plugin) ============ -->
+<script>
+window.EAFPBOT_CONFIG = {
+  // ⚠️ CAMBIAR: número de WhatsApp con código de país, sin + ni espacios (ej: 5491123456789)
+  whatsapp: "549XXXXXXXXXX",
+  // ⚠️ CAMBIAR: links reales de cada sección de la web
+  links: {
+    enVivo:   "https://eafp.com.ar/",
+    onDemand: "https://eafp.com.ar/",
+    packs:    "https://eafp.com.ar/",
+    empresas: "https://eafp.com.ar/",
+    gratis:   "https://eafp.com.ar/"
+  },
+  colorPrincipal: "#FF5A1F",   // naranja de la web
+  colorOscuro:    "#0B2D4F"    // azul de la web
+};
+</script>
+<style>
+#eafpbot-btn{position:fixed;right:20px;bottom:20px;width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;
+  background:#25D366;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:99999;display:flex;align-items:center;justify-content:center}
+#eafpbot-btn svg{width:34px;height:34px;fill:#fff}
+#eafpbot-bubble{position:fixed;right:90px;bottom:34px;background:#fff;color:#0B2D4F;padding:8px 12px;border-radius:12px;
+  font:600 14px/1.3 Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:99999;cursor:pointer}
+#eafpbot-win{position:fixed;right:20px;bottom:94px;width:360px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 120px);
+  background:#f4f6f9;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.3);z-index:99999;display:none;flex-direction:column;
+  overflow:hidden;font:14px/1.45 Arial,sans-serif}
+#eafpbot-win.open{display:flex}
+#eafpbot-head{padding:14px 16px;color:#fff;display:flex;align-items:center;gap:10px}
+#eafpbot-head b{display:block;font-size:15px}#eafpbot-head small{opacity:.85}
+#eafpbot-head button{margin-left:auto;background:none;border:none;color:#fff;font-size:22px;cursor:pointer}
+#eafpbot-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.eafpbot-m{max-width:85%;padding:9px 12px;border-radius:12px;white-space:pre-line}
+.eafpbot-bot{background:#fff;color:#1d2b3a;align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.eafpbot-user{color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.eafpbot-opts{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start}
+.eafpbot-opts button,.eafpbot-opts a{background:#fff;border:1.5px solid;border-radius:18px;padding:6px 12px;cursor:pointer;
+  font:600 13px Arial,sans-serif;text-decoration:none}
+.eafpbot-opts .wa{background:#25D366;border-color:#25D366;color:#fff}
+#eafpbot-input{display:none;padding:10px;gap:6px;background:#fff;border-top:1px solid #e3e6ea}
+#eafpbot-input.show{display:flex}
+#eafpbot-input input{flex:1;border:1px solid #cfd5dc;border-radius:20px;padding:8px 12px;font:14px Arial,sans-serif;outline:none}
+#eafpbot-input button{border:none;border-radius:20px;color:#fff;padding:0 14px;cursor:pointer;font-weight:700}
+</style>
+<button id="eafpbot-btn" aria-label="Abrir chat"><svg viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.6 3 15.6c0 2.5.7 4.8 2 6.8L3.5 29l6.8-1.8c1.8 1 3.8 1.5 5.7 1.5 7.2 0 13-5.6 13-12.6S23.2 3 16 3zm0 23.4c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-4 1.1 1.1-3.9-.3-.4c-1-1.6-1.6-3.5-1.6-5.4C5.7 10.1 10.3 5.6 16 5.6s10.3 4.5 10.3 10.1S21.7 26.4 16 26.4zm5.7-7.6c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.4c.2.2 2.4 3.6 5.8 5 .8.3 1.4.5 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4z"/></svg></button>
+<div id="eafpbot-bubble">¿Te ayudo a elegir tu curso? 👋</div>
+<div id="eafpbot-win" role="dialog" aria-label="Chat EAFP">
+  <div id="eafpbot-head"><div><b>Asistente EAFP</b><small>Respondemos al instante</small></div><button aria-label="Cerrar">×</button></div>
+  <div id="eafpbot-msgs"></div>
+  <form id="eafpbot-input"><input placeholder="Escribí tu respuesta..." autocomplete="off"><button>➤</button></form>
+</div>
+<script>
+(function(){
+  var C = window.EAFPBOT_CONFIG, L = C.links;
+  var win = document.getElementById("eafpbot-win"), msgs = document.getElementById("eafpbot-msgs"),
+      form = document.getElementById("eafpbot-input"), inp = form.querySelector("input"),
+      bubble = document.getElementById("eafpbot-bubble");
+  document.getElementById("eafpbot-head").style.background = C.colorOscuro;
+  form.querySelector("button").style.background = C.colorPrincipal;
+  var datos = {nombre:"", tema:""}, esperando = null, iniciado = false;
+
+  function abrir(){ win.classList.add("open"); bubble.style.display="none"; if(!iniciado){iniciado=true; inicio();} }
+  document.getElementById("eafpbot-btn").onclick = function(){ win.classList.contains("open") ? win.classList.remove("open") : abrir(); };
+  bubble.onclick = abrir;
+  win.querySelector("#eafpbot-head button").onclick = function(){ win.classList.remove("open"); };
+
+  function msg(texto, quien){
+    var d = document.createElement("div");
+    d.className = "eafpbot-m " + (quien==="user" ? "eafpbot-user" : "eafpbot-bot");
+    if (quien==="user") d.style.background = C.colorPrincipal;
+    d.textContent = texto; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  }
+  function bot(texto, opciones, delay){
+    setTimeout(function(){ msg(texto,"bot"); if(opciones) opts(opciones); }, delay===undefined?350:delay);
+  }
+  function opts(lista){
+    var w = document.createElement("div"); w.className = "eafpbot-opts";
+    lista.forEach(function(o){
+      var el;
+      if (o.url){ el=document.createElement("a"); el.href=o.url; el.target="_blank"; el.rel="noopener"; }
+      else { el=document.createElement("button"); el.type="button";
+        el.onclick=function(){ w.remove(); msg(o.t,"user"); o.go(); }; }
+      el.textContent = o.t;
+      if (o.wa) el.className = "wa"; else { el.style.borderColor=C.colorPrincipal; el.style.color=C.colorPrincipal; }
+      w.appendChild(el);
+    });
+    msgs.appendChild(w); msgs.scrollTop = msgs.scrollHeight;
+  }
+  function wa(tema){
+    var texto = "Hola! " + (datos.nombre ? "Soy " + datos.nombre + ". " : "") +
+                "Vengo de la web y quiero información sobre: " + tema;
+    return "https://wa.me/" + C.whatsapp + "?text=" + encodeURIComponent(texto);
+  }
+  function volver(){ return {t:"⬅ Menú principal", go:menu}; }
+  function asesor(tema){ return {t:"💬 Hablar con un asesor", wa:true, url:wa(tema)}; }
+
+  function inicio(){
+    bot("¡Hola! 👋 Soy el asistente de la Escuela Argentina de Finanzas Personales.", null, 200);
+    bot("¿Cómo te llamás?", null, 700);
+    setTimeout(function(){ esperando="nombre"; form.classList.add("show"); inp.focus(); }, 750);
+  }
+  form.onsubmit = function(e){
+    e.preventDefault(); var v = inp.value.trim(); if(!v) return;
+    msg(v,"user"); inp.value="";
+    if (esperando==="nombre"){ datos.nombre = v.split(" ")[0]; esperando=null; form.classList.remove("show"); menu(true); }
+  };
+
+  function menu(primeraVez){
+    bot((primeraVez ? "¡Un gusto, " + datos.nombre + "! " : "") + "¿En qué te puedo ayudar?", [
+      {t:"🌱 Quiero empezar a invertir", go:nivelInicial},
+      {t:"📈 Ya invierto, quiero avanzar", go:nivelAvanzado},
+      {t:"🎥 En vivo vs On demand", go:modalidades},
+      {t:"📦 Packs", go:packs},
+      {t:"💳 Precios y formas de pago", go:pagos},
+      {t:"🏢 Para empresas", go:empresas},
+      {t:"🎁 Recurso gratis", go:gratis},
+      asesor("asesoramiento general")
+    ]);
+  }
+  function nivelInicial(){
+    bot("¡Excelente decisión! 🙌 Tenemos cursos pensados para quien arranca de cero: aprendés a ordenar tus finanzas y a hacer tu primera inversión paso a paso.");
+    bot("¿Cómo preferís cursar?", [
+      {t:"🎥 En vivo (con profesor)", url:L.enVivo},
+      {t:"⏯ On demand (a mi ritmo)", url:L.onDemand},
+      asesor("cursos para principiantes"), volver()
+    ], 900);
+  }
+  function nivelAvanzado(){
+    bot("¡Genial! 🚀 Tenemos cursos para cada nivel, para que pases de tu primera inversión a tu propia estrategia.");
+    bot("Un asesor te puede recomendar el curso ideal según lo que ya sabés:", [
+      asesor("cursos de nivel intermedio / avanzado"),
+      {t:"Ver cursos en vivo", url:L.enVivo}, {t:"Ver cursos on demand", url:L.onDemand}, volver()
+    ], 900);
+  }
+  function modalidades(){
+    bot("🎥 EN VIVO: clases online con profesor, en días y horarios fijos, podés hacer preguntas en el momento.\n\n⏯ ON DEMAND: clases grabadas, las ves cuando quieras y a tu ritmo.", [
+      {t:"Ver en vivo", url:L.enVivo}, {t:"Ver on demand", url:L.onDemand}, asesor("diferencias entre cursos en vivo y on demand"), volver()
+    ]);
+  }
+  function packs(){
+    bot("📦 Los packs combinan varios cursos a un mejor precio que comprarlos por separado.", [
+      {t:"Ver packs", url:L.packs}, asesor("packs de cursos"), volver()
+    ]);
+  }
+  function pagos(){
+    bot("💳 Podés pagar en 3 cuotas sin interés o con 10% OFF por transferencia.", [
+      asesor("precios y formas de pago"), volver()
+    ]);
+  }
+  function empresas(){
+    bot("🏢 Ofrecemos capacitación en finanzas personales para equipos de trabajo. Contanos cuántas personas son y te armamos una propuesta.", [
+      {t:"Ver propuesta empresas", url:L.empresas}, asesor("capacitación para empresas"), volver()
+    ]);
+  }
+  function gratis(){
+    bot("🎁 Tenemos un recurso gratuito para que empieces hoy mismo.", [
+      {t:"Descargar recurso gratis", url:L.gratis}, volver()
+    ]);
+  }
+  setTimeout(function(){ if(!iniciado) bubble.style.display="block"; }, 100);
+})();
+</script>
+<!-- ============ FIN CHATBOT EAFP ============ -->
