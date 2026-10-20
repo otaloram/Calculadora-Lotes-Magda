@@ -220,31 +220,44 @@ CALIFORNIA = [(-124.2, 42.0), (-120.0, 42.0), (-120.0, 39.0), (-114.6, 35.1), (-
               (-124.4, 40.4), (-124.1, 41.0), (-124.2, 42.0)]
 
 
+TAIWAN = [(121.0, 25.3), (121.6, 25.3), (122.0, 25.0), (121.85, 24.5), (121.6, 24.0), (121.5, 23.4), (121.1, 22.7),
+          (120.85, 21.9), (120.7, 22.1), (120.4, 22.5), (120.15, 23.0), (120.1, 23.5), (120.25, 24.1), (120.6, 24.6),
+          (120.9, 24.9), (121.0, 25.3)]
+
+MAPS = {"california": (CALIFORNIA, [("San José", -121.89, 37.34)]),
+        "taiwan": (TAIWAN, [("Hsinchu", 120.97, 24.80), ("Tainan", 120.22, 23.0)])}
+
+
 def r_location(img, t, s, ctx):
     ctx.tag = "Mapa esquemático"
-    # proyección simple lon/lat → píxeles
-    def P(lon, lat):
-        return 1050 + (lon + 124.5) * 70, 140 + (42.2 - lat) * 80
+    outline, pins = MAPS[s.get("map", "california")]
+    lons, lats = [c[0] for c in outline], [c[1] for c in outline]
+    k = min(660 / (max(lons) - min(lons)), 760 / (max(lats) - min(lats)))
+    ox = 1050 + (660 - (max(lons) - min(lons)) * k) / 2
+
+    def P(lon, lat):      # proyección simple lon/lat → píxeles, ajustada al recuadro del mapa
+        return ox + (lon - min(lons)) * k, 160 + (max(lats) - lat) * k
     p = ease((t - 0.1) / 1.5)
-    pts = [P(*c) for c in CALIFORNIA]
-    k = max(2, int(len(pts) * p))
+    pts = [P(*c) for c in outline]
+    kk = max(2, int(len(pts) * p))
     layer = Image.new("L", (W, H), 0)
     ld = ImageDraw.Draw(layer)
     if p > 0.98:
         ld.polygon(pts, fill=40)
     img.paste(Image.new("RGB", (W, H), GREY), (0, 0), layer)
-    ImageDraw.Draw(img).line(pts[:k], fill=GREY_LIGHT, width=3, joint="curve")
-    px, py = P(-121.89, 37.34)
-    a = appear(t, 1.2)
-    pulse = (math.sin(t * 3) + 1) / 2
-    rr = 14 + 18 * pulse
-    rect(img, (px - rr, py - rr, px + rr, py + rr), outline=GOLD, width=2, alpha=a * (1 - pulse * 0.7), radius=int(rr))
-    rect(img, (px - 9, py - 9, px + 9, py + 9), fill=GOLD, alpha=a, radius=9)
-    text(img, (px - 30, py), "San José", font("sans-semibold", 30), BONE, a, anchor="rm")
+    ImageDraw.Draw(img).line(pts[:kk], fill=GREY_LIGHT, width=3, joint="curve")
+    for n_, (name, lon, lat) in enumerate(pins):
+        px, py = P(lon, lat)
+        a = appear(t, 1.2 + n_ * 0.4)
+        pulse = (math.sin(t * 3 + n_) + 1) / 2
+        rr = 14 + 18 * pulse
+        rect(img, (px - rr, py - rr, px + rr, py + rr), outline=GOLD, width=2, alpha=a * (1 - pulse * 0.7), radius=int(rr))
+        rect(img, (px - 9, py - 9, px + 9, py + 9), fill=GOLD, alpha=a, radius=9)
+        text(img, (px - 30, py), name, font("sans-semibold", 30), BONE, a, anchor="rm")
     x = MARGIN + 40
     text(img, (x, 360), tracked(s["date"]), font("sans-semibold", 30), GOLD, appear(t, 0.3))
     text(img, (x, 410), wrap(s["place"], font("serif", 96), 760), font("serif", 96), BONE, appear(t, 0.5))
-    text(img, (x, 650), s.get("coords", ""), font("sans-light", 28), GREY, appear(t, 0.9))
+    text(img, (x, 650), wrap(s.get("coords", ""), font("sans-light", 28), 760), font("sans-light", 28), GREY, appear(t, 0.9))
 
 
 def r_people(img, t, s, ctx):
@@ -747,9 +760,67 @@ def d_models(img, t, s, ctx):
                 _arrow(img, x + bw + 10, y + 80, x + bw + gap - 14, y + 80, appear(t, st + 0.55 + i * 0.35, 0.4))
 
 
+def d_flywheel(img, t, s, ctx):
+    """Círculo de escala: cada etapa alimenta la siguiente."""
+    steps = s.get("steps", ["Más clientes", "Más volumen", "Más inversión", "Mejores procesos"])
+    n = len(steps)
+    cx, cy, R = W // 2, 500, 280
+    sx = 1.6      # elipse horizontal: deja lugar al rótulo central
+    col = ACCENTS["green"]
+    d = ImageDraw.Draw(img)
+    pos = [(cx + sx * R * math.cos(-math.pi / 2 + 2 * math.pi * i / n), cy + R * math.sin(-math.pi / 2 + 2 * math.pi * i / n))
+           for i in range(n)]
+    for i, lab in enumerate(steps):
+        st = ctx.word_time(lab.split()[-1], 0.4 + i * 0.9) - 0.2
+        a = appear(t, st, 0.6)
+        x, y = pos[i]
+        # arco hacia el siguiente nodo
+        aa = appear(t, st + 0.4, 0.8)
+        if aa > 0:
+            a0 = -90 + 360 * i / n + 14
+            a1 = a0 + (360 / n - 28) * aa
+            d.arc((cx - sx * R, cy - R, cx + sx * R, cy + R), a0, a1, fill=GREY, width=4)
+        tw = font("sans-bold", 34).getlength(lab) + 60
+        rect(img, (x - tw / 2, y - 42, x + tw / 2, y + 42), fill=ANTHRACITE, outline=col, width=3, alpha=a, radius=42)
+        text(img, (x, y), lab, font("sans-bold", 34), BONE, a, anchor="mm")
+    # pulso que recorre el círculo cuando está completo
+    full = 0.4 + n * 0.9 + 0.8
+    if t > full:
+        ang = -math.pi / 2 + ((t - full) * 0.9) % (2 * math.pi)
+        px, py = cx + sx * R * math.cos(ang), cy + R * math.sin(ang)
+        rect(img, (px - 9, py - 9, px + 9, py + 9), fill=col, radius=9)
+    text(img, (cx, cy), s.get("center", "TSMC"), font("sans-black", 64), col, appear(t, 0.2), anchor="mm")
+
+
+def d_hub(img, t, s, ctx):
+    """Muchos diseñadores alrededor de una sola fábrica."""
+    clients = s.get("clients", ["Apple", "Nvidia", "AMD"])
+    center = s.get("center", "TSMC")
+    cx, cy = W // 2, 500
+    col = ACCENTS["green"]
+    n = len(clients)
+    R = 330
+    for i, nm in enumerate(clients):
+        ang = math.pi + math.pi * (i + 0.5) / n if s.get("half") else -math.pi / 2 + 2 * math.pi * i / n
+        x, y = cx + R * 1.35 * math.cos(ang), cy + R * math.sin(ang)
+        st = ctx.word_time(nm, 0.3 + i * 0.45) - 0.15
+        a = appear(t, st, 0.5)
+        _arrow(img, x + (cx - x) * 0.22, y + (cy - y) * 0.22, cx + (x - cx) * 0.36, cy + (y - cy) * 0.36,
+               appear(t, st + 0.3, 0.6), GREY, 3)
+        f = font("sans-bold", 40)
+        tw = f.getlength(nm) + 56
+        rect(img, (x - tw / 2, y - 40, x + tw / 2, y + 40), fill=ANTHRACITE, outline=LINE, width=2, alpha=a, radius=8)
+        text(img, (x, y), nm, f, BONE, a, anchor="mm")
+    a = appear(t, 0.1)
+    rect(img, (cx - 150, cy - 80, cx + 150, cy + 80), fill=ANTHRACITE, outline=col, width=4, alpha=a, radius=10)
+    text(img, (cx, cy - 10), center, font("sans-black", 64), col, a, anchor="mm")
+    text(img, (cx, cy + 46), s.get("center_sub", "fabrica"), font("sans", 24), GREY_LIGHT, a, anchor="mm")
+
+
 DIAGRAMS = {"datacenter": d_datacenter, "crowd": d_crowd, "fork": d_fork, "fabless": d_fabless, "moat": d_moat,
             "science": d_science, "parallel": d_parallel, "network": d_network,
-            "secondsource": d_secondsource, "amd64": d_amd64, "fusion": d_fusion, "split": d_split, "models": d_models}
+            "secondsource": d_secondsource, "amd64": d_amd64, "fusion": d_fusion, "split": d_split, "models": d_models,
+            "flywheel": d_flywheel, "hub": d_hub}
 
 
 # ───────────────────────────── imagen de archivo ─────────────────────────────
@@ -801,7 +872,7 @@ def r_bars(img, t, s, ctx):
         p = ease((t - st) / 1.3)
         y = y0 + k * step
         col = ACCENTS.get(it.get("color"), BONE)
-        text(img, (MARGIN + 40, y + 45), it["label"], font("sans-black", 64), BONE, appear(t, st, 0.4), anchor="lm")
+        text(img, (MARGIN + 40, y + 45), it["label"], font("sans-black", 54), BONE, appear(t, st, 0.4), anchor="lm")
         rect(img, (x0, y + 10, x1, y + 80), fill=(26, 28, 32), alpha=appear(t, st, 0.4))
         wv = (x1 - x0) * it["value"] / vmax * p
         if wv > 2:
@@ -813,10 +884,35 @@ def r_bars(img, t, s, ctx):
              appear(t, ctx.word_time(s.get("result_sync", "zzzz"), ctx.dur * 0.6), 0.6), anchor="mm")
 
 
+def r_sites(img, t, s, ctx):
+    """Fábricas por país con su estado (operativa / en construcción / anunciada)."""
+    ctx.note = s.get("note")
+    status_col = {"operativa": ACCENTS["green"], "en construcción": GOLD, "anunciada": GREY_LIGHT,
+                  "planificada": GREY_LIGHT}
+    text(img, (MARGIN + 40, 230), tracked(s.get("title", "")), font("sans-semibold", 28), GREY_LIGHT, appear(t, 0.1))
+    items = s["items"]
+    step = 130
+    y0 = 330
+    for i, it in enumerate(items):
+        st = ctx.word_time(it.get("sync", it["place"]), 0.4 + i * 0.6) - 0.15
+        a = appear(t, st, 0.5)
+        y = y0 + i * step
+        rect(img, (MARGIN + 40, y + step - 14, W - MARGIN - 40, y + step - 12), fill=LINE, alpha=a)
+        text(img, (MARGIN + 40, y + 50), it["place"], font("serif", 60), BONE, a, anchor="lm", dy=(1 - a) * 12)
+        text(img, (MARGIN + 640, y + 50), it.get("detail", ""), font("sans", 28), GREY_LIGHT, a, anchor="lm")
+        stt = it.get("status", "")
+        c = status_col.get(stt.lower(), GREY_LIGHT)
+        f = font("sans-semibold", 24)
+        sw = f.getlength(tracked(stt)) + 40
+        rect(img, (W - MARGIN - 40 - sw, y + 30, W - MARGIN - 40, y + 72), outline=c, width=2, alpha=a, radius=21)
+        text(img, (W - MARGIN - 40 - sw / 2, y + 51), tracked(stt), f, c, a, anchor="mm")
+
+
 RENDERERS = {"title": r_title, "statement": r_statement, "definition": r_definition, "invest": r_invest,
              "counter": r_counter, "checklist": r_checklist, "calendar": r_calendar, "runway": r_runway,
              "timeline": r_timeline, "location": r_location, "people": r_people, "product": r_product,
-             "chart": r_chart, "diagram": r_diagram, "image": r_image, "brand": r_brand, "bars": r_bars}
+             "chart": r_chart, "diagram": r_diagram, "image": r_image, "brand": r_brand, "bars": r_bars,
+             "sites": r_sites}
 
 
 def render_frame(spec, t, ctx, fade_in=0.0, fade_out=0.0):

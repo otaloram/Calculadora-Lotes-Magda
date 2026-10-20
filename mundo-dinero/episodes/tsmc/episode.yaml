@@ -1,0 +1,292 @@
+# MUNDO DINERO — Episodio: TSMC
+# Texto de locución: sección 20 del pedido, con las notas de producción reemplazadas por los datos verificados
+# (ver verificacion.md). El video sigue a la voz.
+
+title: "TSMC: la fábrica que se volvió indispensable"
+slug: tsmc-la-fabrica-indispensable
+description: >-
+  TSMC fabrica los chips de Apple, Nvidia y AMD sin diseñar los productos que conocemos. Morris Chang eligió en 1987
+  la parte más cara y riesgosa de la industria, construir fábricas, y la convirtió en una ventaja extraordinaria.
+  El modelo foundry, la confianza de los clientes, el derrumbe de casi 85 % de sus ADR entre 2000 y 2002, la vuelta
+  de Chang en 2009, el smartphone, la inteligencia artificial, la geopolítica y el costo permanente de liderar.
+tags: [TSMC, TSM, Taiwan Semiconductor, Morris Chang, semiconductores, foundry, fabless, Apple, Nvidia, AMD, inversiones, Mundo Dinero]
+target_duration: [290, 315]
+thumbnail: {line1: "TSMC", line2: "La fábrica indispensable", big: "−85 %"}
+
+voice:
+  edge: es-AR-TomasNeural
+  rate: "-7%"           # ritmo documental; 656 palabras
+  pitch: "-2Hz"
+pause: 0.5
+
+# Acentos del episodio: cobre/silicio y un rojo institucional controlado
+colors:
+  green: [196, 128, 72]     # cobre
+  blue: [140, 156, 176]     # silicio
+
+pronunciation:
+  "TSMC": "te ese eme ce"
+  "Morris Chang": "Morris Chang"
+  "Texas Instruments": "Téxas Ínstruments"
+  "Philips": "Fílips"
+  "fabless": "fábles"
+  "foundry": "fáundri"
+  "ADR": "a de erre"
+  "Apple": "Ápol"
+  "Nvidia": "Envidia"
+  "AMD": "a eme de"
+  "Intel": "Íntel"
+  "Arizona": "Arizona"
+  "smartphone": "smartfon"
+
+data:
+  tsm: data/TSM_monthly.csv
+  tsm_source: "ADR TSM (NYSE) · cierres mensuales ajustados por splits, sin dividendos · FMP"
+
+chapters:
+  c1: "La paradoja industrial"
+  c2: "Morris Chang y la invención del modelo"
+  c3: "Crecer sin asegurar el retorno del inversor"
+  c4: "Reinvertir para liderar"
+  c5: "La IA, la geopolítica y el inversor"
+
+sources:
+  - "TSMC — Form 20-F 2025 (SEC EDGAR, presentado el 16/04/2026): ingresos, ganancia neta y capex en NT$"
+  - "TSMC Investor Relations — https://investor.tsmc.com/"
+  - "Financial Modeling Prep — ADR TSM, precios diarios ajustados por splits y por dividendos (consultado 20/10/2026)"
+  - "Alpha Vantage — USD/TWD mensual (conversión de cifras de 2025)"
+
+scenes:
+  # ───────────────────────── CAPÍTULO 1 ─────────────────────────
+  - id: s01
+    chapter: c1
+    text: "Hay una empresa que fabrica los chips de Apple, Nvidia y AMD,"
+    visual: {type: diagram, kind: hub, clients: ["Apple", "Nvidia", "AMD"], center: "?", center_sub: "fabrica", label: "Los chips de tres gigantes salen del mismo lugar"}
+  - id: s02
+    chapter: c1
+    text: "pero que no diseña los productos que conocemos."
+    visual: {type: statement, text: "Fabrica. No diseña los productos que conocemos."}
+  - id: s03
+    chapter: c1
+    text: "Se llama TSMC."
+    visual: {type: title, kicker: "TAIWAN SEMICONDUCTOR MANUFACTURING COMPANY", headline: "TSMC", accent: green}
+  - id: s04
+    chapter: c1
+    text: "Y su historia tiene una paradoja: eligió la parte más cara y riesgosa de la industria, construir fábricas,"
+    visual: {type: statement, text: "LA PARTE MÁS CARA DEL NEGOCIO", sub: "Construir fábricas.", accent: red}
+  - id: s05
+    chapter: c1
+    text: "y terminó convirtiéndola en una ventaja extraordinaria."
+    visual: {type: chart, start: "1997-10", end: "2026-10", log: true, label: "ADR TSM 1997–2026 · escala logarítmica"}
+    pause: 0.7
+
+  # ───────────────────────── CAPÍTULO 2 ─────────────────────────
+  - id: s06
+    chapter: c2
+    text: "En 1987, Morris Chang tenía 55 años."
+    visual: {type: people, names: ["Morris Chang"], roles: ["Fundador de TSMC · 55 años en 1987"], caption: "Taiwán · 1987"}
+  - id: s07
+    chapter: c2
+    text: "Había dedicado décadas a los semiconductores, principalmente en Texas Instruments."
+    visual: {type: timeline, items: [["1958", "Entra a Texas Instruments"], ["1983", "Deja TI tras 25 años"], ["1987", "Funda TSMC"]], focus: 0, accent: green}
+  - id: s08
+    chapter: c2
+    text: "El gobierno de Taiwán quería desarrollar una industria propia"
+    visual: {type: location, place: "Hsinchu, Taiwán", date: "Febrero de 1987", coords: "Parque científico de Hsinchu", map: taiwan}
+  - id: s09
+    chapter: c2
+    text: "y Chang propuso una idea que rompía las reglas: separar el diseño de los chips de su fabricación."
+    visual: {type: diagram, kind: models, rows: [["Antes", [["Diseño + fábrica", "Intel · IBM · TI"], ["Producto", "Marca propia"]]], ["TSMC", [["Diseño", "El cliente"], ["Fabricación", "TSMC"], ["Producto", "Marca del cliente"]]]], label: "Fabricante integrado frente a foundry especializada"}
+  - id: s10
+    chapter: c2
+    text: "TSMC no competiría con sus clientes. Fabricaría sus diseños."
+    visual: {type: statement, text: "NO COMPETIMOS CONTRA NUESTROS CLIENTES", big: true}
+  - id: s11
+    chapter: c2
+    text: "El Estado taiwanés aportó casi la mitad del capital inicial."
+    visual: {type: bars, title: "Capital fundacional de TSMC · 1987", items: [{label: "Estado", value: 48, display: "48 %", color: green, sync: "Estado"}, {label: "Philips", value: 27.6, display: "27,6 %", color: white, sync: "Philips"}, {label: "Privados", value: 24.4, display: "24,4 %", color: white, sync: "garage"}], note: "Participaciones según la historia corporativa de TSMC; el resto, inversores privados taiwaneses."}
+  - id: s12
+    chapter: c2
+    text: "Philips contribuyó con dinero y tecnología."
+    visual: {type: checklist, items: ["Philips: dinero", "Philips: tecnología y licencias"], accent: green}
+  - id: s13
+    chapter: c2
+    text: "No era la clásica historia de un emprendimiento en un garage. Era una gran apuesta industrial."
+    visual: {type: statement, text: "No un garage: una apuesta industrial de un Estado."}
+  - id: s14
+    chapter: c2
+    text: "¿Por qué podía funcionar? Una planta de semiconductores cuesta fortunas, incluso cuando produce poco."
+    visual: {type: statement, text: "Una fábrica cuesta fortunas aunque produzca poco.", sub: "Costos fijos enormes."}
+  - id: s15
+    chapter: c2
+    text: "Pero si una misma fábrica trabaja para decenas de diseñadores, puede repartir esos costos entre muchos pedidos."
+    visual: {type: diagram, kind: hub, clients: ["Procesadores", "Gráficos", "Comunicaciones", "Controladores", "Memorias", "Sensores"], center: "1 fábrica", center_sub: "costos repartidos", label: "Una misma infraestructura, decenas de clientes"}
+  - id: s16
+    chapter: c2
+    text: "Más clientes permiten más volumen. Más volumen, más inversión. Y mejores procesos atraen todavía más clientes."
+    visual: {type: diagram, kind: flywheel, steps: ["Más clientes", "Más volumen", "Más inversión", "Mejores procesos"], center: "TSMC", label: "El círculo de escala · esquema conceptual"}
+  - id: s17
+    chapter: c2
+    text: "Además, TSMC ofrecía algo fundamental: confianza."
+    visual: {type: statement, text: "Confianza.", big: true}
+  - id: s18
+    chapter: c2
+    text: "Si diseñabas un chip, tu fabricante no iba a lanzar uno rival."
+    visual: {type: statement, text: "Tu fabricante no iba a lanzar un chip rival."}
+  - id: s19
+    chapter: c2
+    text: "Así crecieron las compañías llamadas fabless: empresas que diseñan y encargan la producción."
+    visual: {type: definition, term: "Fabless", full: "«sin fábrica»", meaning: "Empresas que diseñan chips y encargan su producción a una foundry como TSMC"}
+  - id: s20
+    chapter: c2
+    text: "Nvidia fue una de ellas. Y AMD terminaría adoptando también ese camino."
+    visual: {type: timeline, items: [["1987", "TSMC"], ["1993", "Nvidia nace sin fábrica"], ["2009", "AMD separa sus fábricas"]], focus: 1, accent: green}
+    pause: 0.7
+
+  # ───────────────────────── CAPÍTULO 3 ─────────────────────────
+  - id: s21
+    chapter: c3
+    text: "El ascenso no fue lineal para sus accionistas."
+    visual: {type: title, kicker: "CAPÍTULO 3", headline: "El accionista", sub: "Una historia distinta a la de la empresa"}
+  - id: s22
+    chapter: c3
+    text: "Después de la euforia tecnológica, entre febrero de 2000 y octubre de 2002, los ADR de TSMC cayeron cerca del ochenta y cinco por ciento."
+    visual: {type: chart, start: "1999-06", end: "2003-06", label: "ADR TSM · 2000–2002", marks: [{date: "2000-02", text: "Máximo · feb 2000", color: white}, {date: "2002-10", text: "Mínimo · oct 2002", color: red}], drop: {from: "2000-02", to: "2002-10", text: "−85 %"}, note: "Cierres diarios: 03/02/2000 US$ 25,74 → 09/10/2002 US$ 3,96 = −84,6 %"}
+    mood: tension
+    pause: 0.9
+  - id: s23
+    chapter: c3
+    text: "Una inversión hipotética de diez mil dólares habría llegado a valer unos mil quinientos."
+    visual: {type: invest, from: 10000, to: 1540, label_from: "Inversión en el máximo de 2000", label_to: "Valor en el mínimo de 2002", note: "Simulación con cierres diarios ajustados por splits. Sin dividendos, impuestos, comisiones ni inflación."}
+    mood: tension
+    pause: 0.9
+  - id: s24
+    chapter: c3
+    text: "Y el precio recién volvió a aquel máximo en 2016, dieciséis años después."
+    visual: {type: chart, start: "1999-06", end: "2016-12", log: true, label: "ADR TSM · la espera", marks: [{date: "2000-02", text: "Máximo", color: white}, {date: "2002-10", text: "Mínimo", color: red}, {date: "2016-03", text: "Recupera · mar 2016", color: green}], hline: "2000-02", note: "Primer cierre igual o superior al máximo de 2000: 16/03/2016"}
+    mood: tension
+  - id: s25
+    chapter: c3
+    text: "Con los dividendos reinvertidos, la espera terminaba antes: en 2013."
+    visual: {type: bars, title: "Años hasta recuperar el máximo de 2000", items: [{label: "Precio", value: 16.1, display: "16 años · 2016", color: red, sync: "precio"}, {label: "Total", value: 12.9, display: "13 años · 2013", color: white, sync: "dividendos"}], note: "Precio: serie ajustada por splits. Total: con dividendos reinvertidos (FMP); primer cierre sobre el máximo de 2000 el 02/01/2013."}
+    mood: tension
+  - id: s26
+    chapter: c3
+    text: "La empresa seguía creciendo, pero comprar una gran empresa al precio equivocado podía significar años de espera."
+    visual: {type: statement, text: "Una gran empresa al precio equivocado.", sub: "Años de espera.", accent: red}
+  - id: s27
+    chapter: c3
+    text: "Ésa es una de las lecciones financieras centrales de esta historia."
+    visual: {type: statement, text: "Empresa y acción no son lo mismo."}
+    pause: 0.7
+
+  # ───────────────────────── CAPÍTULO 4 ─────────────────────────
+  - id: s28
+    chapter: c4
+    text: "En 2009, después de la crisis mundial, Morris Chang volvió a liderar la empresa. Tenía 77 años."
+    visual: {type: people, names: ["Morris Chang"], roles: ["Vuelve como CEO en junio de 2009 · 77 años"], caption: "El regreso"}
+  - id: s29
+    chapter: c4
+    text: "Mientras otros reducían inversiones, TSMC apostó por seguir ampliando tecnología y capacidad."
+    visual: {type: statement, text: "Invertir cuando otros recortan.", accent: green}
+  - id: s30
+    chapter: c4
+    text: "Cuando la demanda se recuperó, esa decisión le permitió estar preparada."
+    visual: {type: diagram, kind: flywheel, steps: ["Crisis", "Seguir invirtiendo", "Capacidad lista", "Más clientes"], center: "2009", label: "La apuesta contracíclica"}
+  - id: s31
+    chapter: c4
+    text: "Después llegó la revolución del smartphone."
+    visual: {type: title, kicker: "2010–2018", headline: "El smartphone"}
+  - id: s32
+    chapter: c4
+    text: "Apple y otras compañías diseñaban procesadores cada vez más sofisticados; TSMC podía fabricarlos a gran escala."
+    visual: {type: diagram, kind: fabless, boxes: [["APPLE", "Diseña el procesador"], ["TSMC", "Lo fabrica a escala"], ["iPHONE", "Millones de unidades"]], sync: "TSMC", caption: "Diseñar sin fabricar, fabricar sin diseñar"}
+  - id: s33
+    chapter: c4
+    text: "Más adelante, los retrasos industriales de Intel abrieron oportunidades para diseñadores como AMD que recurrían a fabricantes externos."
+    visual: {type: diagram, kind: models, rows: [["AMD", [["Diseño", "AMD"], ["Fabricación", "TSMC"], ["Producto", "Ryzen · EPYC"]]], ["Intel", [["Diseño + fabricación", "Retrasos en procesos"], ["Producto", "Core · Xeon"]]]], label: "Los retrasos de Intel, una oportunidad para el modelo foundry"}
+    pause: 0.7
+
+  # ───────────────────────── CAPÍTULO 5 ─────────────────────────
+  - id: s34
+    chapter: c5
+    text: "La inteligencia artificial llevó este modelo a otra dimensión."
+    visual: {type: title, kicker: "CAPÍTULO 5", headline: "Otra dimensión", sub: "La inteligencia artificial"}
+  - id: s35
+    chapter: c5
+    text: "Nvidia vende aceleradores. AMD busca disputarle mercado. Otros gigantes diseñan chips propios."
+    visual: {type: diagram, kind: hub, clients: ["Nvidia", "AMD", "Otros", "Apple"], center: "TSMC", center_sub: "fabrica para todos", label: "Competidores entre sí, clientes de la misma fábrica"}
+  - id: s36
+    chapter: c5
+    text: "Y TSMC puede participar en la producción de muchos de ellos."
+    visual: {type: diagram, kind: datacenter, label: "Aceleradores para centros de datos fabricados por terceros"}
+  - id: s37
+    chapter: c5
+    text: "No tiene que adivinar quién ganará cada competencia: necesita conservar su liderazgo industrial."
+    visual: {type: statement, text: "No elige al ganador. Fabrica para todos.", accent: green}
+  - id: s38
+    chapter: c5
+    text: "Pero el poder trae riesgos."
+    visual: {type: statement, text: "El poder trae riesgos.", accent: red}
+    mood: sparse
+  - id: s39
+    chapter: c5
+    text: "Gran parte de las operaciones avanzadas se concentra en Taiwán, en medio de tensiones geopolíticas."
+    visual: {type: location, place: "Taiwán", date: "Concentración de la producción avanzada", coords: "A unos 130 km de China continental en su punto más cercano", map: taiwan}
+    mood: sparse
+  - id: s40
+    chapter: c5
+    text: "Por eso TSMC está invirtiendo en Estados Unidos, Japón y Europa."
+    visual: {type: sites, title: "La nueva geografía de TSMC", items: [{place: "Taiwán", detail: "Hsinchu · Taichung · Tainan", status: "Operativa", sync: "TSMC"}, {place: "Arizona", detail: "Phoenix · EE. UU.", status: "Operativa", sync: "Estados"}, {place: "Japón", detail: "Kumamoto · JASM", status: "Operativa", sync: "Japón"}, {place: "Alemania", detail: "Dresde · ESMC", status: "En construcción", sync: "Europa"}], note: "Estado de la primera planta de cada sitio según comunicados de TSMC; ampliaciones adicionales en distintas etapas."}
+    mood: sparse
+  - id: s41
+    chapter: c5
+    text: "Construir fuera de Taiwán puede mejorar la resiliencia, aunque también presiona los costos y los márgenes."
+    visual: {type: statement, text: "Comprar seguridad con margen.", sub: "Producir fuera de Taiwán cuesta más."}
+    mood: sparse
+  - id: s42
+    chapter: c5
+    text: "En 2025, TSMC facturó más de ciento veinte mil millones de dólares y ganó unos cincuenta y cinco mil millones."
+    visual: {type: bars, title: "TSMC · 2025 · US$ miles de millones", items: [{label: "Ingresos", value: 123, display: "≈ 123", color: white, sync: "facturó"}, {label: "Ganancia", value: 55.6, display: "≈ 56", color: green, sync: "ganó"}], note: "20-F 2025: ingresos NT$ 3,85 billones; ganancia neta NT$ 1,74 billones. Conversión al tipo de cambio promedio 2025 (≈ 31,2 NT$/US$)."}
+    pause: 0.8
+  - id: s43
+    chapter: c5
+    text: "Pero ese mismo año invirtió cerca de cuarenta y un mil millones en fábricas y equipos, y para 2026 planificó una inversión todavía mayor."
+    visual: {type: bars, title: "TSMC · 2025 · US$ miles de millones", items: [{label: "Ganancia", value: 55.6, display: "≈ 56", color: green, sync: "invirtió"}, {label: "Capex", value: 41.1, display: "≈ 41", color: red, sync: "fábricas"}], note: "Capex 2025: NT$ 1,28 billones (20-F). El plan 2026 es una guía de la empresa, no un gasto realizado."}
+  - id: s44
+    chapter: c5
+    text: "Ese contraste resume el negocio: ganar muchísimo, pero tener que reinvertir constantemente para no perder la ventaja."
+    visual: {type: statement, text: "Ganar muchísimo. Reinvertir siempre."}
+  - id: s45
+    chapter: c5
+    text: "Hay otro riesgo menos visible: aunque fabrique para numerosos clientes, una parte importante de la facturación proviene de pocos gigantes tecnológicos."
+    visual: {type: diagram, kind: hub, clients: ["Cliente 1", "Cliente 2", "Pocos gigantes", "Muchos más"], center: "TSMC", center_sub: "concentración", label: "Muchos clientes, pero una gran parte del dinero viene de pocos"}
+    mood: sparse
+  - id: s46
+    chapter: c5
+    text: "Y la acción puede sufrir fuertes caídas incluso cuando sus fábricas resultan indispensables."
+    visual: {type: chart, start: "2021-06", end: "2024-06", label: "ADR TSM · 2022", marks: [{date: "2022-01", text: "Máximo · ene 2022", color: white}, {date: "2022-10", text: "Mínimo · oct 2022", color: red}], drop: {from: "2022-01", to: "2022-10", text: "−57 %"}, note: "Cierres diarios: 14/01/2022 US$ 140,66 → 03/11/2022 US$ 60,28 = −57,1 %"}
+    mood: sparse
+  - id: s47
+    chapter: c5
+    text: "TSMC no se hizo grande evitando gastar."
+    visual: {type: statement, text: "No se hizo grande evitando gastar."}
+  - id: s48
+    chapter: c5
+    text: "Se hizo grande porque consiguió suficiente demanda para invertir durante más tiempo y a una escala que pocos pueden igualar."
+    visual: {type: diagram, kind: flywheel, steps: ["Demanda", "Inversión", "Escala", "Liderazgo"], center: "TSMC", label: "Invertir más que los demás, durante más tiempo"}
+  - id: s49
+    chapter: c5
+    text: "No inventó el próximo producto revolucionario. Construyó el lugar donde muchos de esos productos necesitan fabricarse."
+    visual: {type: statement, text: "NO NECESITA INVENTAR EL PRODUCTO. FABRICA EL LUGAR DONDE NACE.", accent: green}
+    pause: 0.8
+  - id: s50
+    chapter: c5
+    text: "Y ahora la pregunta es para vos: ¿tendrías TSMC en tu cartera?"
+    visual: {type: statement, text: "¿TENDRÍAS TSMC EN TU CARTERA?", big: true}
+    pause: 0.6
+  - id: s51
+    chapter: c5
+    text: "Dejanos tu opinión y contanos qué empresa querés que analicemos en Mundo Dinero."
+    visual: {type: brand}
+    pause: 1.5
