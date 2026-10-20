@@ -1,0 +1,282 @@
+# MUNDO DINERO — Episodio: Nvidia
+# Cada escena = un fragmento de narración + su visual.
+# La duración de cada escena la define el audio real (el video sigue a la voz).
+# `say:` (opcional) reemplaza el texto que lee la voz, sin cambiar los subtítulos.
+
+title: "Nvidia: de dos derrumbes a la era de la IA"
+slug: nvidia-dos-derrumbes
+description: >-
+  Hoy Nvidia es sinónimo de inteligencia artificial. Pero sus accionistas sufrieron dos derrumbes de más del 85 %
+  y esperaron años para recuperar lo invertido. De una mesa de Denny's en 1993 al fracaso del NV1, el rescate de
+  RIVA 128, la GPU, CUDA y la era de la IA: la historia completa y la pregunta que importa para un inversor.
+tags: [Nvidia, NVDA, inversiones, acciones, bolsa, inteligencia artificial, GPU, CUDA, Jensen Huang, Mundo Dinero, finanzas]
+target_duration: [290, 315]
+thumbnail: {line1: "NVIDIA", line2: "Dos derrumbes antes de la IA", big: "−90 %"}
+voice:
+  edge: es-AR-TomasNeural     # masculina, rioplatense
+  rate: "-4%"
+  pitch: "-2Hz"
+pause: 0.35                    # silencio entre escenas (s)
+
+# Solo afecta a lo que lee la voz (no a subtítulos ni pantalla)
+pronunciation:
+  "Denny's": "Dénis"
+  "GPU": "ge pe u"
+  "TSMC": "te ese eme ce"
+  "NV1": "ene ve uno"
+  "RIVA 128": "Riva ciento veintiocho"
+  "GeForce 256": "Yifors doscientos cincuenta y seis"
+  "Direct3D": "Dairect tri di"
+  "CUDA": "Cuda"
+  "IA": "i a"
+
+data:
+  nvda: data/NVDA_monthly_adjusted.csv
+  nvda_source: "Cierres mensuales ajustados · Alpha Vantage"
+
+chapters:
+  c1: "Las dos grandes caídas"
+  c2: "Fundación y primer fracaso"
+  c3: "La recuperación"
+  c4: "CUDA y la inteligencia artificial"
+  c5: "Reflexión financiera"
+
+sources:
+  - "Nvidia — Corporate timeline: https://www.nvidia.com/es-la/about-nvidia/corporate-timeline/"
+  - "Investment Visual — NVDA returns / drawdowns: https://www.investmentvisual.com/stocks/nvda/returns"
+  - "Alpha Vantage — NVDA monthly adjusted time series (gráficos)"
+
+scenes:
+  # ───────────────────────── CAPÍTULO 1 ─────────────────────────
+  - id: s01
+    chapter: c1
+    text: "Mirá esta historia."
+    visual: {type: title, kicker: "MUNDO DINERO", headline: "Dos derrumbes.", sub: "Una empresa que casi nadie quiso esperar."}
+  - id: s02
+    chapter: c1
+    text: "Hoy Nvidia es uno de los nombres que definen la inteligencia artificial."
+    visual: {type: title, kicker: "NVIDIA · NASDAQ: NVDA", headline: "El nombre de la era de la IA", accent: green}
+  - id: s03
+    chapter: c1
+    text: "Sus chips están en centros de datos de todo el planeta."
+    visual: {type: diagram, kind: datacenter, label: "Centros de datos · aceleradores de IA"}
+  - id: s04
+    chapter: c1
+    text: "Pero imaginar que siempre fue una apuesta segura es un error enorme."
+    visual: {type: statement, text: "¿Una apuesta segura?", sub: "No siempre.", accent: red}
+  - id: s05
+    chapter: c1
+    text: "Hubo inversores que vieron evaporarse casi todo su capital. Y tuvieron que esperar años para recuperar el precio al que habían comprado."
+    visual: {type: chart, start: "2000-01", end: "2017-06", log: true, label: "NVDA 2000–2017 · escala logarítmica", shade: [["2002-01", "2006-11"], ["2007-10", "2016-04"]]}
+  - id: s06
+    chapter: c1
+    text: "Primero, enero de 2002. La acción alcanza un máximo."
+    visual: {type: chart, start: "2001-01", end: "2002-02", label: "Primer derrumbe", marks: [{date: "2002-01", text: "Máximo · ene 2002", color: white}]}
+  - id: s07
+    chapter: c1
+    text: "Apenas nueve meses después, había perdido el 89,7 por ciento."
+    visual: {type: chart, start: "2001-01", end: "2002-11", label: "Primer derrumbe", marks: [{date: "2002-01", text: "Máximo · ene 2002", color: white}, {date: "2002-10", text: "Mínimo · oct 2002", color: red}], drop: {from: "2002-01", to: "2002-10", text: "−89,7 %"}}
+  - id: s08
+    chapter: c1
+    text: "Si tenías diez mil dólares invertidos en aquel pico, en el mínimo te quedaban aproximadamente mil treinta."
+    visual: {type: invest, from: 10000, to: 1030, label_from: "Inversión en el máximo", label_to: "Valor en el mínimo", note: "Simulación ilustrativa. No incluye dividendos, impuestos, inflación ni costos de transacción."}
+  - id: s09
+    chapter: c1
+    text: "Y para recuperar el precio inicial, sin contar inflación ni costo de oportunidad, tenías que esperar hasta noviembre de 2006."
+    visual: {type: chart, start: "2001-01", end: "2007-03", label: "Primer derrumbe y recuperación", marks: [{date: "2002-01", text: "Máximo", color: white}, {date: "2002-10", text: "Mínimo", color: red}, {date: "2006-11", text: "Recupera · nov 2006", color: green}], hline: "2002-01"}
+  - id: s10
+    chapter: c1
+    text: "Casi cinco años."
+    visual: {type: calendar, from: 2002, to: 2006, label: "AÑOS DE ESPERA", result: "≈ 5 años"}
+  - id: s11
+    chapter: c1
+    text: "Pero todavía faltaba lo peor."
+    visual: {type: statement, text: "Todavía faltaba lo peor.", accent: red}
+  - id: s12
+    chapter: c1
+    text: "Desde el máximo de octubre de 2007 hasta noviembre de 2008, Nvidia perdió el 85,1 por ciento."
+    visual: {type: chart, start: "2006-06", end: "2009-03", label: "Segundo derrumbe", marks: [{date: "2007-10", text: "Máximo · oct 2007", color: white}, {date: "2008-11", text: "Mínimo · nov 2008", color: red}], drop: {from: "2007-10", to: "2008-11", text: "−85,1 %"}}
+  - id: s13
+    chapter: c1
+    text: "Y aquel precio recién volvió en abril de 2016. Ocho años y medio."
+    visual: {type: chart, start: "2006-06", end: "2016-10", label: "Segundo derrumbe y recuperación", marks: [{date: "2007-10", text: "Máximo", color: white}, {date: "2008-11", text: "Mínimo", color: red}, {date: "2016-04", text: "Recupera · abr 2016", color: green}], hline: "2007-10"}
+  - id: s14
+    chapter: c1
+    text: "Pensalo: ocho años y medio viendo pasar crisis, gobiernos y nuevas tecnologías, mientras tu inversión todavía no recuperaba aquel máximo."
+    visual: {type: calendar, from: 2007, to: 2016, label: "AÑOS BAJO EL MÁXIMO", result: "8 años y medio", events: {2008: "Crisis financiera", 2010: "Crisis de deuda europea", 2012: "Nuevos gobiernos", 2014: "Smartphones en todas partes"}}
+  - id: s15
+    chapter: c1
+    text: "¿Cómo pudo una empresa que parecía condenada terminar siendo una de las grandes protagonistas de la economía mundial?"
+    visual: {type: statement, text: "¿Cómo sobrevivió?", sub: "De parecer condenada a protagonista de la economía mundial."}
+  - id: s16
+    chapter: c1
+    text: "La respuesta empieza en una mesa de restaurante."
+    visual: {type: title, kicker: "CAPÍTULO 2", headline: "Una mesa de restaurante", sub: "California, 1993"}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 2 ─────────────────────────
+  - id: s17
+    chapter: c2
+    text: "Abril de 1993, San José, California."
+    visual: {type: location, place: "San José, California", date: "Abril de 1993", coords: "37.34° N · 121.89° O"}
+  - id: s18
+    chapter: c2
+    text: "Jensen Huang, Chris Malachowsky y Curtis Priem comparten una idea en un Denny's:"
+    visual: {type: people, names: ["Jensen Huang", "Chris Malachowsky", "Curtis Priem"], roles: ["Cofundador", "Cofundador", "Cofundador"], caption: "Los fundadores de Nvidia"}
+  - id: s19
+    chapter: c2
+    text: "las computadoras personales iban a necesitar una capacidad gráfica muchísimo mayor."
+    visual: {type: statement, text: "La PC iba a necesitar mucha más potencia gráfica.", sub: "La idea fundacional, 1993"}
+  - id: s20
+    chapter: c2
+    text: "Eran ingenieros, no adivinos."
+    visual: {type: statement, text: "Ingenieros, no adivinos."}
+  - id: s21
+    chapter: c2
+    text: "En ese momento competían decenas de fabricantes de chips gráficos. Y casi nadie sabía qué tecnología terminaría imponiéndose."
+    visual: {type: diagram, kind: crowd, label: "Decenas de fabricantes de chips gráficos a mediados de los 90", note: "Esquema ilustrativo"}
+  - id: s22
+    chapter: c2
+    text: "Dos años más tarde lanzan el NV1, vendido en la tarjeta Diamond Edge 3D."
+    visual: {type: product, name: "NV1", year: "1995", detail: "Comercializado en la tarjeta Diamond Edge 3D", image: assets/nv1.jpg}
+  - id: s23
+    chapter: c2
+    mood: sparse
+    text: "Pero esa primera apuesta sale mal."
+    visual: {type: statement, text: "La primera apuesta sale mal.", accent: red}
+  - id: s24
+    chapter: c2
+    mood: sparse
+    text: "Su arquitectura gráfica no estaba alineada con el estándar Direct3D que Microsoft impulsaría para los videojuegos de Windows."
+    visual: {type: diagram, kind: fork, left: "NV1 · arquitectura propia", right: "Direct3D · estándar de Microsoft", label: "Dos caminos para los gráficos 3D en Windows"}
+  - id: s25
+    chapter: c2
+    mood: sparse
+    text: "Nvidia tenía un problema: había construido tecnología para un camino que el mercado no eligió."
+    visual: {type: statement, text: "Tecnología para un camino que el mercado no eligió."}
+  - id: s26
+    chapter: c2
+    mood: sparse
+    text: "La crisis fue brutal. En 1996 hubo despidos masivos."
+    visual: {type: timeline, items: [["1993", "Fundación"], ["1995", "NV1"], ["1996", "Despidos masivos"]], focus: 2, accent: red}
+  - id: s27
+    chapter: c2
+    mood: sparse
+    text: "Y en 1997, mientras se preparaba un nuevo producto, la empresa llegó a contar con dinero para apenas un mes de sueldos, según relatos de su propia historia."
+    visual: {type: runway, label: "Caja disponible", value: "≈ 1 mes de sueldos", note: "Según relatos de la propia historia de la empresa"}
+  - id: s28
+    chapter: c2
+    mood: sparse
+    text: "No se trataba de perder participación de mercado. Se trataba de sobrevivir."
+    visual: {type: statement, text: "Se trataba de sobrevivir.", accent: red}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 3 ─────────────────────────
+  - id: s29
+    chapter: c3
+    text: "Entonces llegó el giro. En 1997 lanzaron RIVA 128."
+    visual: {type: product, name: "RIVA 128", year: "1997", detail: "El producto que cambió el rumbo", image: assets/riva128.jpg}
+  - id: s30
+    chapter: c3
+    text: "En sus primeros cuatro meses se distribuyeron más de un millón de unidades."
+    visual: {type: counter, value: 1000000, prefix: "+", suffix: " unidades", label: "Primeros cuatro meses de RIVA 128", accent: green}
+  - id: s31
+    chapter: c3
+    text: "De pronto Nvidia tenía un producto competitivo, compradores y una segunda oportunidad."
+    visual: {type: checklist, items: ["Producto competitivo", "Compradores", "Una segunda oportunidad"], accent: green}
+  - id: s32
+    chapter: c3
+    text: "Dos años después, en 1999, presentó GeForce 256"
+    visual: {type: product, name: "GeForce 256", year: "1999", detail: "Presentada como la primera GPU", image: assets/geforce256.jpg}
+  - id: s33
+    chapter: c3
+    text: "y popularizó el concepto de la GPU: una unidad de procesamiento dedicada a acelerar gráficos."
+    visual: {type: definition, term: "GPU", full: "Graphics Processing Unit", meaning: "Unidad de procesamiento dedicada a acelerar gráficos"}
+  - id: s34
+    chapter: c3
+    text: "Ahí aparece una diferencia decisiva. Nvidia no fabricaba computadoras completas."
+    visual: {type: statement, text: "Nvidia no fabricaba computadoras completas."}
+  - id: s35
+    chapter: c3
+    text: "Diseñaba una parte fundamental y trabajaba con socios industriales para producirla."
+    visual: {type: diagram, kind: fabless, label: "Modelo de negocio: diseño propio, fabricación con socios"}
+  - id: s36
+    chapter: c3
+    text: "En 1998 estableció una alianza con la taiwanesa TSMC."
+    visual: {type: timeline, items: [["1997", "RIVA 128"], ["1998", "Alianza con TSMC"], ["1999", "GeForce 256"]], focus: 1, accent: green}
+  - id: s37
+    chapter: c3
+    text: "Con el tiempo, el diseño de chips y su ecosistema de software se transformarían en una enorme ventaja competitiva."
+    visual: {type: diagram, kind: moat, label: "Chips + software = ventaja competitiva"}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 4 ─────────────────────────
+  - id: s38
+    chapter: c4
+    text: "Pero la gran jugada todavía no había llegado."
+    visual: {type: title, kicker: "CAPÍTULO 4", headline: "La gran jugada", sub: "CUDA, 2006"}
+  - id: s39
+    chapter: c4
+    text: "En 2006, Nvidia presentó CUDA, una plataforma para que los programadores utilizaran la potencia de sus procesadores gráficos en tareas que iban mucho más allá de los videojuegos."
+    visual: {type: definition, term: "CUDA", full: "2006 · plataforma de cómputo paralelo", meaning: "Programar la GPU para tareas más allá de los videojuegos"}
+  - id: s40
+    chapter: c4
+    text: "Era una apuesta paciente. Durante años, el negocio más visible seguía siendo el gaming."
+    visual: {type: statement, text: "Una apuesta paciente.", sub: "El negocio visible seguía siendo el gaming."}
+  - id: s41
+    chapter: c4
+    text: "Sin embargo, científicos e investigadores empezaban a aprovechar aquellas GPU para cálculos cada vez más exigentes."
+    visual: {type: diagram, kind: science, label: "Uso científico de las GPU"}
+  - id: s42
+    chapter: c4
+    text: "La inteligencia artificial necesitaba exactamente eso: procesamiento masivo y paralelo."
+    visual: {type: diagram, kind: parallel, label: "CPU: pocos núcleos potentes · GPU: miles de núcleos en paralelo"}
+  - id: s43
+    chapter: c4
+    text: "Los avances en aprendizaje profundo, durante la década siguiente, demostraron que las GPU podían entrenar modelos de una forma que los procesadores tradicionales no podían igualar fácilmente."
+    visual: {type: diagram, kind: network, label: "Entrenamiento de redes neuronales: millones de operaciones simultáneas"}
+  - id: s44
+    chapter: c4
+    text: "Nvidia no inventó sola la inteligencia artificial. Pero llevaba años construyendo las herramientas que iban a volverla posible a gran escala."
+    visual: {type: timeline, items: [["1999", "GPU"], ["2006", "CUDA"], ["2010s", "Aprendizaje profundo"], ["2022–23", "IA generativa"]], focus: 2, accent: green}
+  - id: s45
+    chapter: c4
+    text: "Cuando la IA generativa despegó en 2022 y 2023, las empresas tecnológicas comenzaron a invertir enormes sumas en centros de datos y aceleradores."
+    visual: {type: chart, start: "2019-01", end: "2026-10", label: "NVDA 2019–2026", marks: [{date: "2022-11", text: "IA generativa", color: green}]}
+  - id: s46
+    chapter: c4
+    text: "Nvidia pasó de ser conocida principalmente por sus placas de video a ocupar un lugar central en la infraestructura de la nueva economía digital."
+    visual: {type: diagram, kind: datacenter, label: "De placas de video a infraestructura de la economía digital"}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 5 ─────────────────────────
+  - id: s47
+    chapter: c5
+    text: "Ahora viene la pregunta que importa para un inversor."
+    visual: {type: title, kicker: "CAPÍTULO 5", headline: "La pregunta del inversor"}
+  - id: s48
+    chapter: c5
+    text: "¿Una empresa extraordinaria es automáticamente una buena inversión a cualquier precio? No."
+    visual: {type: statement, text: "Buena empresa ≠ buena inversión a cualquier precio."}
+  - id: s49
+    chapter: c5
+    text: "Hay que mirar crecimiento, márgenes, competencia, valoración, concentración de clientes y cuánto de ese futuro ya está descontado en la cotización."
+    visual: {type: checklist, items: ["Crecimiento", "Márgenes", "Competencia", "Valoración", "Concentración de clientes", "Futuro ya descontado en el precio"]}
+  - id: s50
+    chapter: c5
+    text: "Nvidia sobrevivió a productos fallidos, a crisis tecnológicas y a dos derrumbes bursátiles gigantescos."
+    visual: {type: chart, start: "2000-01", end: "2026-10", log: true, label: "NVDA 2000–2026 · escala logarítmica", shade: [["2002-01", "2006-11"], ["2007-10", "2016-04"]]}
+  - id: s51
+    chapter: c5
+    text: "Su historia muestra el poder de una visión a largo plazo. Pero también el costo emocional y financiero de sostener una acción que puede caer ochenta o noventa por ciento."
+    visual: {type: invest, from: 10000, to: 1000, label_from: "Lo que invertiste", label_to: "Lo que podés ver en pantalla", note: "Ilustrativo: una caída del 90 %."}
+  - id: s52
+    chapter: c5
+    text: "Vos, conociendo esta historia, ¿la tendrías hoy en tu cartera?"
+    visual: {type: statement, text: "¿VOS LA TENDRÍAS EN TU CARTERA?", big: true}
+    pause: 0.8
+  - id: s53
+    chapter: c5
+    text: "Mundo Dinero."
+    visual: {type: brand}
+    pause: 1.5

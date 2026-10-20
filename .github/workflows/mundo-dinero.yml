@@ -1,0 +1,91 @@
+name: Mundo Dinero — producir episodio
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Carpeta del episodio (dentro de mundo-dinero/)"
+        default: "episodes/nvidia"
+        required: true
+      upload:
+        description: "Subir a YouTube (requiere secrets YT_*)"
+        type: boolean
+        default: false
+      privacy:
+        description: "Privacidad en YouTube"
+        type: choice
+        options: [private, unlisted, public]
+        default: private
+  push:
+    paths:
+      - "mundo-dinero/episodes/**"
+      - "mundo-dinero/md/**"
+      - ".github/workflows/mundo-dinero.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: mundo-dinero
+    env:
+      EPISODE: ${{ inputs.episode || 'episodes/nvidia' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Dependencias
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+          pip install -q -r requirements.txt
+
+      - name: Producir video (voz es-AR-TomasNeural)
+        run: python -m md.build "$EPISODE" --tts edge --jobs 4
+
+      - name: Localizar entregables
+        id: out
+        run: |
+          SLUG=$(python -c "import yaml,os;print(yaml.safe_load(open(os.environ['EPISODE']+'/episode.yaml'))['slug'])")
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "dir=mundo-dinero/build/$SLUG" >> "$GITHUB_OUTPUT"
+          cat "build/$SLUG/qc_report.json"
+
+      - name: Guardar como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.out.outputs.slug }}
+          path: |
+            ${{ steps.out.outputs.dir }}/*.mp4
+            ${{ steps.out.outputs.dir }}/*.srt
+            ${{ steps.out.outputs.dir }}/*.jpg
+            ${{ steps.out.outputs.dir }}/*.txt
+            ${{ steps.out.outputs.dir }}/*.json
+            ${{ steps.out.outputs.dir }}/*.csv
+          retention-days: 30
+
+      - name: Publicar descarga (GitHub Release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          D=build/${{ steps.out.outputs.slug }}
+          TAG="md-${{ steps.out.outputs.slug }}-${{ github.run_number }}"
+          gh release create "$TAG" --target "${{ github.sha }}" --prerelease \
+            --title "MUNDO DINERO · ${{ steps.out.outputs.slug }} (#${{ github.run_number }})" \
+            --notes-file "$D/youtube_description.txt" \
+            "$D/${{ steps.out.outputs.slug }}.mp4" "$D/${{ steps.out.outputs.slug }}.es.srt" \
+            "$D/thumbnail.jpg" "$D/qc_report.json" "$D/produccion_planos.csv"
+
+      - name: Subir a YouTube
+        if: ${{ inputs.upload }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python -m md.upload_youtube "build/${{ steps.out.outputs.slug }}" --privacy "${{ inputs.privacy }}"
