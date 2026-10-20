@@ -1,0 +1,311 @@
+# MUNDO DINERO — Episodio: AMD
+# Guion condensado de cinco minutos (sección 20 del pedido). El video sigue a la voz.
+
+title: "AMD: la empresa que dejó de fabricar para volver a competir"
+slug: amd-dejo-de-fabricar
+description: >-
+  En 2015 una acción de AMD llegó a valer US$ 1,61. Perdía dinero, tenía más deuda que liquidez y enfrentaba a Intel
+  y a Nvidia. Diez años después facturó más de US$ 34.000 millones. De segundo proveedor de IBM a Athlon, AMD64, la
+  compra de ATI, la separación de sus fábricas, Lisa Su, Zen, Ryzen, EPYC y la carrera de la IA: cómo sobrevivió y
+  qué aprende un inversor de dos derrumbes de más del 90 %.
+tags: [AMD, Advanced Micro Devices, Lisa Su, Ryzen, EPYC, Intel, Nvidia, TSMC, semiconductores, acciones, inversiones, Mundo Dinero]
+target_duration: [290, 315]
+thumbnail: {line1: "AMD", line2: "Dejó de fabricar para volver", big: "US$ 1,61"}
+
+voice:
+  edge: es-AR-TomasNeural
+  rate: "-10%"          # ritmo documental sobrio; el guion condensado tiene ~614 palabras
+  pitch: "-2Hz"
+pause: 0.6
+
+# Acentos del episodio: verde técnico y azul profundo, con moderación
+colors:
+  green: [0, 168, 120]
+  blue: [52, 104, 186]
+
+pronunciation:
+  "AMD": "a eme de"
+  "Advanced Micro Devices": "Advanst Máicro Diváisis"
+  "Jerry Sanders": "Yeri Sánders"
+  "IBM": "i be eme"
+  "NexGen": "Nexyen"
+  "K6": "ka seis"
+  "Opteron": "Ópteron"
+  "AMD64": "a eme de sesenta y cuatro"
+  "Athlon 64": "Atlon sesenta y cuatro"
+  "Athlon": "Atlon"
+  "x86": "equis ochenta y seis"
+  "ATI": "a te i"
+  "CPU": "ce pe u"
+  "GPU": "ge pe u"
+  "GlobalFoundries": "Global Fáundris"
+  "Bulldozer": "Buldóser"
+  "PlayStation": "Pléisteishon"
+  "Xbox": "Equis box"
+  "Lisa Su": "Lisa Su"
+  "Zen": "Sen"
+  "Ryzen": "Ráisen"
+  "EPYC": "Épic"
+  "TSMC": "te ese eme ce"
+  "Xilinx": "Sáilinx"
+  "Instinct": "Ínstinct"
+  "Nvidia": "Envidia"
+
+data:
+  amd: data/AMD_monthly_adjusted.csv
+  amd_source: "AMD · cierres mensuales ajustados por splits, sin dividendos · Alpha Vantage"
+
+chapters:
+  c1: "Al borde de desaparecer"
+  c2: "De segundo proveedor a rival"
+  c3: "El precio de crecer"
+  c4: "Renunciar a las fábricas para volver"
+  c5: "La nueva competencia y la pregunta del inversor"
+
+sources:
+  - "AMD — Form 10-K 2015 y 2025 (SEC EDGAR): ingresos, resultado neto, deuda y liquidez"
+  - "Alpha Vantage — AMD monthly adjusted / income statement / balance sheet (consultado 20/10/2026)"
+  - "AMD — comunicados: adquisición de ATI (2006), creación de GlobalFoundries (2009), cierre de la compra de Xilinx (2022)"
+  - "AMD — Corporate history / Investor Relations: fundación (1969), NexGen (1996), Athlon (1999), Opteron (2003), Zen (2017)"
+
+scenes:
+  # ───────────────────────── CAPÍTULO 1 ─────────────────────────
+  - id: s01
+    pause: 1.0
+    chapter: c1
+    text: "En 2015, una acción de AMD llegó a valer apenas un dólar con sesenta y un centavos."
+    visual: {type: chart, start: "2014-01", end: "2016-03", label: "AMD 2014–2016", marks: [{date: "2015-07", text: "US$ 1,61 · jul 2015", color: red}], note: "US$ 1,61: mínimo intradía de julio de 2015"}
+  - id: s02
+    chapter: c1
+    text: "La compañía perdía dinero,"
+    visual: {type: counter, value: 660, prefix: "−US$ ", suffix: " millones", label: "Resultado neto de AMD en 2015", accent: red}
+  - id: s03
+    chapter: c1
+    text: "tenía más deuda que liquidez"
+    visual: {type: bars, title: "Balance al 31/12/2015", items: [{label: "Deuda", value: 2237, display: "US$ 2.237 M", color: red, sync: "deuda"}, {label: "Liquidez", value: 785, display: "US$ 785 M", color: white, sync: "liquidez"}], note: "Fuente: AMD 10-K 2015 vía Alpha Vantage. Liquidez = efectivo e inversiones de corto plazo."}
+  - id: s04
+    chapter: c1
+    text: "y enfrentaba a dos gigantes: Intel en procesadores y Nvidia en gráficos."
+    visual: {type: diagram, kind: secondsource, buyer: "AMD", buyer_sub: "2015", suppliers: [["Intel", "Procesadores"], ["Nvidia", "Gráficos"]], versus: true, label: "Dos rivales más grandes en cada frente"}
+  - id: s05
+    chapter: c1
+    text: "Parecía una empresa sin lugar en el futuro."
+    visual: {type: statement, text: "Una empresa sin lugar en el futuro.", accent: red}
+  - id: s06
+    pause: 1.0
+    chapter: c1
+    text: "Pero diez años más tarde, su facturación superaba los treinta y cuatro mil millones de dólares anuales."
+    visual: {type: bars, title: "Ingresos anuales de AMD", items: [{label: "2015", value: 3991, display: "US$ 3.991 M", color: white, sync: "diez"}, {label: "2025", value: 34639, display: "US$ 34.639 M", color: green, sync: "facturación"}], note: "Ingresos anuales GAAP. Fuente: AMD 10-K 2015 y 2025 vía Alpha Vantage."}
+  - id: s07
+    chapter: c1
+    text: "¿Cómo hizo para sobrevivir?"
+    visual: {type: statement, text: "¿Cómo hizo para sobrevivir?", big: true}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 2 ─────────────────────────
+  - id: s08
+    chapter: c2
+    text: "La historia empieza en 1969."
+    visual: {type: title, kicker: "CAPÍTULO 2", headline: "1969", sub: "Silicon Valley, California"}
+  - id: s09
+    chapter: c2
+    text: "Jerry Sanders y otros siete ingenieros fundaron Advanced Micro Devices."
+    visual: {type: people, names: ["Jerry Sanders"], roles: ["Cofundador · venía de Fairchild Semiconductor"], caption: "Advanced Micro Devices · 1969"}
+  - id: s10
+    chapter: c2
+    text: "AMD no nació para dominar la industria:"
+    visual: {type: statement, text: "No nació para dominar la industria."}
+  - id: s11
+    chapter: c2
+    text: "encontró su oportunidad siendo un segundo proveedor de chips, una alternativa para que los grandes compradores no dependieran de una sola empresa."
+    visual: {type: definition, term: "2ª fuente", full: "Second source", meaning: "Un segundo fabricante autorizado para que el comprador no dependa de un solo proveedor"}
+  - id: s12
+    chapter: c2
+    text: "En los ochenta, IBM necesitaba una segunda fuente de procesadores para sus computadoras personales."
+    visual: {type: diagram, kind: secondsource, buyer: "IBM", buyer_sub: "PC · 1981", suppliers: [["Intel", "Proveedor original"], ["AMD", "Segunda fuente"]], label: "La regla de IBM: nunca depender de un solo proveedor"}
+  - id: s13
+    chapter: c2
+    text: "Intel aceptó que AMD fabricara chips compatibles."
+    visual: {type: timeline, items: [["1969", "Fundación"], ["1982", "Acuerdo con Intel"], ["1987", "Arbitraje"]], focus: 1, accent: green}
+  - id: s14
+    chapter: c2
+    text: "Pero esa relación terminó en disputas legales"
+    visual: {type: statement, text: "De socios a rivales en los tribunales.", accent: red}
+  - id: s15
+    chapter: c2
+    text: "y AMD comprendió algo: para tener futuro debía crear tecnología propia."
+    visual: {type: statement, text: "Para tener futuro, tecnología propia."}
+  - id: s16
+    chapter: c2
+    text: "Compró NexGen en 1996. De esa operación surgió la base del K6."
+    visual: {type: timeline, items: [["1996", "Compra NexGen"], ["1997", "K6"], ["1999", "Athlon"]], focus: 0, accent: green}
+  - id: s17
+    chapter: c2
+    text: "En 1999 llegó Athlon,"
+    visual: {type: product, name: "Athlon", year: "1999", detail: "El procesador que llevó a AMD a pelear por rendimiento", image: assets/athlon.jpg}
+  - id: s18
+    chapter: c2
+    text: "y AMD demostró que podía desafiar a Intel en rendimiento."
+    visual: {type: statement, text: "Por primera vez, rival de Intel en rendimiento.", accent: green}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 3 ─────────────────────────
+  - id: s19
+    chapter: c3
+    text: "Pero ganar una batalla tecnológica no garantizaba tranquilidad bursátil."
+    visual: {type: title, kicker: "CAPÍTULO 3", headline: "El precio de crecer"}
+  - id: s20
+    pause: 1.0
+    chapter: c3
+    text: "Entre 2000 y 2002, la acción llegó a perder alrededor del noventa y cuatro por ciento desde su máximo de referencia."
+    visual: {type: chart, start: "1999-12", end: "2003-03", label: "Primer derrumbe · 2000–2002", marks: [{date: "2000-04", text: "Máximo · 2000", color: white}, {date: "2002-09", text: "Mínimo · 2002", color: red}], drop: {from: "2000-04", to: "2002-09", text: "≈ −94 %"}, note: "Caída intradía jun-2000 (US$ 48,50) → oct-2002 (US$ 3,10): −93,6 %"}
+  - id: s21
+    pause: 1.0
+    chapter: c3
+    text: "Una inversión hipotética de diez mil dólares habría quedado cerca de seiscientos cuarenta, antes de costos y sin considerar dividendos."
+    visual: {type: invest, from: 10000, to: 640, label_from: "Inversión en el máximo de 2000", label_to: "Valor en el mínimo de 2002", note: "Simulación ilustrativa con precios intradía ajustados por splits. Sin costos, impuestos ni inflación. AMD no pagaba dividendos."}
+  - id: s22
+    chapter: c3
+    text: "En 2003 presentó Opteron y Athlon 64."
+    visual: {type: product, name: "Opteron", year: "2003", detail: "Servidores · junto con Athlon 64 para PC", image: assets/opteron.jpg}
+  - id: s23
+    chapter: c3
+    text: "La arquitectura AMD64 permitió extender los procesadores x86 a sesenta y cuatro bits manteniendo compatibilidad."
+    visual: {type: diagram, kind: amd64, label: "AMD64: 64 bits sin abandonar el software existente"}
+  - id: s24
+    chapter: c3
+    text: "AMD dejaba de limitarse a seguir estándares: empezaba a influir en ellos."
+    visual: {type: statement, text: "De seguir estándares a crearlos.", accent: green}
+  - id: s25
+    chapter: c3
+    text: "Entonces llegó la apuesta más arriesgada."
+    visual: {type: statement, text: "La apuesta más arriesgada.", accent: red}
+  - id: s26
+    pause: 1.0
+    chapter: c3
+    text: "En 2006 compró ATI, la empresa de gráficos, por unos cinco mil cuatrocientos millones de dólares."
+    visual: {type: counter, value: 5400, prefix: "US$ ", suffix: " millones", label: "Compra de ATI · 2006", accent: blue}
+  - id: s27
+    chapter: c3
+    text: "La visión tecnológica era combinar CPU y GPU."
+    visual: {type: diagram, kind: fusion, result: "CPU + GPU en un mismo chip", label: "La visión detrás de la compra de ATI"}
+  - id: s28
+    chapter: c3
+    text: "El problema fue financiar la compra justo antes de años muy difíciles."
+    visual: {type: statement, text: "La compra se financió justo antes de la tormenta."}
+  - id: s29
+    chapter: c3
+    text: "La deuda pesaba y las pérdidas se acumularon."
+    visual: {type: bars, title: "Resultado neto anual de AMD", items: [{label: "2006", value: 166, display: "−US$ 166 M", color: red}, {label: "2007", value: 3379, display: "−US$ 3.379 M", color: red}, {label: "2008", value: 3098, display: "−US$ 3.098 M", color: red}], note: "Pérdidas netas GAAP. Deuda total a fines de 2008: US$ 4.776 M. Fuente: AMD 10-K vía Alpha Vantage."}
+    mood: sparse
+  - id: s30
+    pause: 1.0
+    chapter: c3
+    text: "A fines de 2008, la acción había sufrido otro desplome superior al noventa por ciento frente a su máximo de referencia de 2006."
+    visual: {type: chart, start: "2005-06", end: "2009-06", label: "Segundo derrumbe · 2006–2008", marks: [{date: "2006-01", text: "Máximo · 2006", color: white}, {date: "2008-11", text: "Mínimo · nov 2008", color: red}], drop: {from: "2006-01", to: "2008-12", text: "> −90 %"}, note: "Intradía mar-2006 (US$ 42,70) → nov-2008 (US$ 1,62): −96 %"}
+    mood: sparse
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 4 ─────────────────────────
+  - id: s31
+    chapter: c4
+    text: "AMD tomó una decisión que parecía una derrota:"
+    visual: {type: title, kicker: "CAPÍTULO 4", headline: "Una decisión que parecía una derrota"}
+  - id: s32
+    chapter: c4
+    text: "separó sus fábricas en 2009 y ayudó a crear GlobalFoundries."
+    visual: {type: diagram, kind: split, from: "AMD", left: "AMD", left_sub: "Diseño de chips", right: "GlobalFoundries", right_sub: "Fábricas · 2009", caption: "La separación de la manufactura"}
+  - id: s33
+    chapter: c4
+    text: "Dejó de sostener con su propio balance toda la inversión industrial necesaria para fabricar chips de última generación."
+    visual: {type: statement, text: "Fabricar chips de punta exige miles de millones por cada generación.", sub: "Una carga que AMD ya no podía sostener sola."}
+  - id: s34
+    chapter: c4
+    text: "Eligió concentrar sus recursos en diseño."
+    visual: {type: statement, text: "Concentrarse en el diseño.", accent: green}
+  - id: s35
+    chapter: c4
+    text: "Eso le compró tiempo, no una solución inmediata."
+    visual: {type: statement, text: "Tiempo, no una solución.", accent: red}
+  - id: s36
+    chapter: c4
+    text: "Los procesadores Bulldozer no lograron revertir su posición."
+    visual: {type: product, name: "Bulldozer", year: "2011", detail: "Una arquitectura que no alcanzó a Intel", image: assets/bulldozer.jpg}
+    mood: sparse
+  - id: s37
+    chapter: c4
+    text: "Los chips para PlayStation y Xbox aportaron negocio, pero la compañía seguía debilitada."
+    visual: {type: checklist, items: ["PlayStation 4 · chip AMD", "Xbox One · chip AMD", "Pero: pérdidas y deuda"], accent: blue}
+    mood: sparse
+  - id: s38
+    chapter: c4
+    text: "En 2014, Lisa Su asumió como directora ejecutiva."
+    visual: {type: people, names: ["Lisa Su"], roles: ["Directora ejecutiva desde 2014"], caption: "Un nuevo liderazgo"}
+  - id: s39
+    chapter: c4
+    text: "Los recursos eran limitados. La respuesta fue apostar por una nueva arquitectura: Zen."
+    visual: {type: definition, term: "Zen", full: "Nueva arquitectura de CPU", meaning: "Una apuesta concentrada: un solo diseño para PC, servidores y más"}
+  - id: s40
+    chapter: c4
+    text: "En 2017 llegaron Ryzen para computadoras y EPYC para servidores."
+    visual: {type: timeline, items: [["2014", "Lisa Su, CEO"], ["2017", "Ryzen y EPYC"], ["2019", "Zen 2 · 7 nm (TSMC)"]], focus: 1, accent: green}
+  - id: s41
+    chapter: c4
+    text: "AMD volvía a competir."
+    visual: {type: chart, start: "2014-01", end: "2020-12", label: "AMD 2014–2020", marks: [{date: "2015-07", text: "Mínimo", color: red}, {date: "2017-03", text: "Ryzen", color: green}]}
+  - id: s42
+    chapter: c4
+    text: "La decisión de abandonar las fábricas empezó entonces a revelar su ventaja."
+    visual: {type: statement, text: "Lo que parecía una derrota se volvió una ventaja."}
+  - id: s43
+    chapter: c4
+    text: "AMD podía diseñar sus procesadores y contratar producción avanzada con socios como TSMC, mientras Intel enfrentaba dificultades en algunos de sus procesos industriales."
+    visual: {type: diagram, kind: models, label: "Dos modelos industriales"}
+    pause: 0.6
+
+  # ───────────────────────── CAPÍTULO 5 ─────────────────────────
+  - id: s44
+    chapter: c5
+    text: "La recuperación también cambió su capacidad financiera."
+    visual: {type: title, kicker: "CAPÍTULO 5", headline: "La nueva competencia"}
+  - id: s45
+    chapter: c5
+    text: "En 2022 adquirió Xilinx mediante una operación basada en acciones, ampliando su presencia en computación adaptable y mercados industriales."
+    visual: {type: timeline, items: [["2017", "Ryzen · EPYC"], ["2022", "Compra de Xilinx"], ["2023+", "Instinct · IA"]], focus: 1, accent: blue}
+  - id: s46
+    chapter: c5
+    text: "Y con EPYC y la familia Instinct empezó a buscar un papel cada vez mayor en los centros de datos y la inteligencia artificial,"
+    visual: {type: diagram, kind: datacenter, label: "EPYC e Instinct: centros de datos e inteligencia artificial"}
+  - id: s47
+    chapter: c5
+    text: "donde Nvidia es un rival central."
+    visual: {type: statement, text: "En IA, el rival es Nvidia."}
+  - id: s48
+    chapter: c5
+    # Guion original: "...según los datos que deberán contrastarse con su informe anual antes de publicar".
+    # Dato contrastado (US$ 34.639 M, 10-K 2025): se reemplaza la nota de producción por la fuente.
+    text: "Los ingresos de AMD en 2025 superaron los treinta y cuatro mil millones de dólares, según su informe anual."
+    visual: {type: bars, title: "Ingresos anuales de AMD · US$ millones", items: [{label: "2015", value: 3991, display: "3.991", color: white}, {label: "2020", value: 9763, display: "9.763", color: white}, {label: "2025", value: 34639, display: "34.639", color: green}], note: "Ingresos anuales GAAP. Fuente: AMD 10-K vía Alpha Vantage. Dato 2025 verificado: US$ 34.639 M."}
+  - id: s49
+    chapter: c5
+    text: "Pero la historia deja una advertencia: una empresa puede tomar grandes decisiones estratégicas y aun así someter al accionista a derrumbes enormes y esperas larguísimas."
+    visual: {type: chart, start: "1999-12", end: "2026-10", log: true, label: "AMD 1999–2026 · escala logarítmica", shade: [["2000-04", "2002-09"], ["2006-01", "2008-12"]]}
+  - id: s50
+    chapter: c5
+    text: "AMD sobrevivió no porque siempre eligiera bien, sino porque aprendió a decidir dónde no podía seguir gastando."
+    visual: {type: statement, text: "Sobrevivió porque aprendió dónde no gastar."}
+  - id: s51
+    chapter: c5
+    text: "Cuando no pudo ganar todas las guerras, eligió cuál valía la pena pelear."
+    visual: {type: statement, text: "Elegir qué guerra vale la pena pelear.", accent: green}
+    pause: 0.6
+  - id: s52
+    chapter: c5
+    text: "Y vos, ¿tendrías AMD hoy en tu cartera?"
+    visual: {type: statement, text: "¿VOS TENDRÍAS AMD HOY EN TU CARTERA?", big: true}
+    pause: 0.8
+  - id: s53
+    chapter: c5
+    text: "Mundo Dinero."
+    visual: {type: brand}
+    pause: 1.5

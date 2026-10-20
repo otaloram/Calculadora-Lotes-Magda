@@ -28,7 +28,7 @@ LEAD_IN = 0.3      # silencio antes de la primera palabra
 def load_data(ep):
     out = {}
     for k, v in (ep.get("data") or {}).items():
-        if k.endswith("_source"):
+        if k.endswith("_source") or k == "note":
             out[k] = v
             continue
         with open(ROOT / v) as f:
@@ -45,8 +45,12 @@ def fmt_ts(s, srt=True):
 # ───────────────────────────── render de una escena (proceso hijo) ─────────────────────────────
 
 def render_scene(job):
+    from . import style, visuals
     from .visuals import Ctx, render_frame
-    sc, dur, words, data, ep_root, chap_label, chap_num, fade_in, fade_out, out, preview = job
+    sc, dur, words, data, ep_root, chap_label, chap_num, fade_in, fade_out, out, preview, colors = job
+    for name, rgb in (colors or {}).items():      # acentos por episodio (p. ej. verde/azul de la empresa)
+        style.ACCENTS[name] = tuple(rgb)
+        setattr(visuals, name.upper(), tuple(rgb))
     ctx = Ctx(dur, words, data, ep_root, chap_label, chap_num, sc)
     fps = 12 if preview else FPS
     n = max(1, int(round(dur * fps)))
@@ -139,7 +143,7 @@ def main():
         fade_out = 0.4 if next_c != sc["chapter"] else 0.0
         jobs.append((sc, tl["dur"], tl["words"], data, ep_dir, chapters[sc["chapter"]].upper(),
                      chap_ids.index(sc["chapter"]) + 1, fade_in, fade_out, out / "scenes" / f"{sc['id']}.mp4",
-                     a.preview))
+                     a.preview, ep.get("colors")))
     log(f"Renderizando {len(jobs)} escenas con {a.jobs} procesos…")
     with Pool(a.jobs) as pool:
         for sid, d in pool.imap_unordered(render_scene, jobs):
@@ -259,7 +263,8 @@ def deliverables(ep, timeline, total, out, a):
             sc, v = tl["sc"], tl["sc"]["visual"]
             src = ""
             if v["type"] == "chart":
-                src = ep.get("data", {}).get("nvda_source", "")
+                key = v.get("series") or next(k for k in ep["data"] if not k.endswith("_source") and k != "note")
+                src = ep["data"].get(key + "_source", "")
             elif v["type"] in ("image", "product") and v.get("credit"):
                 src = v["credit"]
             elif v["type"] in ("diagram", "product", "location", "people"):

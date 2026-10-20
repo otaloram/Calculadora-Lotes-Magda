@@ -19,8 +19,9 @@ BONE = (237, 232, 223)
 GREEN = (118, 185, 0)       # verde tecnológico (Nvidia) — usar con moderación
 RED = (214, 69, 69)         # rojo contenido: pérdidas y riesgo
 GOLD = (201, 162, 39)       # acento de marca MUNDO DINERO
+BLUE = (52, 104, 186)       # azul profundo (acento secundario por episodio)
 
-ACCENTS = {"green": GREEN, "red": RED, "gold": GOLD, "white": BONE, None: GOLD}
+ACCENTS = {"green": GREEN, "blue": BLUE, "red": RED, "gold": GOLD, "white": BONE, None: GOLD}
 
 MARGIN = 140
 

@@ -32,10 +32,23 @@ jobs:
     defaults:
       run:
         working-directory: mundo-dinero
-    env:
-      EPISODE: ${{ inputs.episode || 'episodes/nvidia' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Elegir episodio
+        env:
+          INPUT_EP: ${{ inputs.episode }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$INPUT_EP" ]; then EP="$INPUT_EP"; else
+            # en un push, el episodio con más archivos modificados (o el más reciente)
+            EP=$(git diff --name-only "$BEFORE" HEAD 2>/dev/null | grep -oE '^mundo-dinero/episodes/[^/]+' | sort | uniq -c | sort -rn | head -1 | awk '{print $2}' | sed 's#^mundo-dinero/##')
+            [ -z "$EP" ] && EP=$(ls -td episodes/*/ | head -1 | sed 's#/$##')
+          fi
+          echo "EPISODE=$EP" >> "$GITHUB_ENV"
+          echo "Episodio: $EP"
 
       - uses: actions/setup-python@v5
         with:

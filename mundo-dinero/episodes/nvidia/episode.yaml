@@ -33,6 +33,7 @@ pronunciation:
 data:
   nvda: data/NVDA_monthly_adjusted.csv
   nvda_source: "Cierres mensuales ajustados · Alpha Vantage"
+  note: "Porcentajes del guion: serie diaria (investmentvisual.com)"
 
 chapters:
   c1: "Las dos grandes caídas"

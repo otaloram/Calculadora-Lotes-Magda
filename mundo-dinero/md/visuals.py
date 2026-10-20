@@ -326,7 +326,8 @@ def r_product(img, t, s, ctx):
 # ───────────────────────────── gráfico bursátil ─────────────────────────────
 
 def _series(ctx, start, end):
-    rows = [r for r in ctx.data["nvda"] if start <= r[0][:7] <= end]
+    key = ctx.scene["visual"].get("series") or next(k for k in ctx.data if not k.endswith("_source") and k != "note")
+    rows = [r for r in ctx.data[key] if start <= r[0][:7] <= end]
     return rows
 
 
@@ -338,7 +339,8 @@ def _month_idx(rows, ym):
 
 
 def r_chart(img, t, s, ctx):
-    ctx.note = ctx.data["nvda_source"] + " · Porcentajes del guion: serie diaria (investmentvisual.com)"
+    key = s.get("series") or next(k for k in ctx.data if not k.endswith("_source") and k != "note")
+    ctx.note = " · ".join(x for x in (ctx.data.get(key + "_source"), s.get("note") or ctx.data.get("note")) if x)
     rows = _series(ctx, s["start"], s["end"])
     vals = np.array([r[1] for r in rows], dtype=float)
     logy = s.get("log", False)
@@ -363,10 +365,12 @@ def r_chart(img, t, s, ctx):
         d.line((X0, y, X1, y), fill=(32, 34, 38), width=1)
     years = sorted({r[0][:4] for r in rows})
     stepy = max(1, len(years) // 9)
+    last_x = -1e9
     for yy in years[::stepy]:
         i = _month_idx(rows, yy + "-01")
-        if rows[i][0][:4] == yy:
+        if rows[i][0][:4] == yy and X(i) - last_x > 90:
             text(img, (X(i), Y1 + 24), yy, font("sans-medium", 22), GREY, 1, anchor="ma")
+            last_x = X(i)
     text(img, (X0, Y0 - 40), tracked(s.get("label", "")), font("sans-semibold", 24), GREY_LIGHT, appear(t, 0.0))
     if logy:
         text(img, (X1, Y0 - 40), "escala logarítmica", font("sans", 20), GREY, 1, anchor="ra")
@@ -422,7 +426,7 @@ def r_chart(img, t, s, ctx):
         rect(img, (x - 11, y - 11, x + 11, y + 11), outline=col, width=3, alpha=a, radius=11)
         nb = [pts[j][1] for j in (i - 2, i + 2) if 0 <= j < n] or [y]
         above = y <= sum(nb) / len(nb) or y > Y1 - 60      # máximos: arriba · mínimos: abajo
-        if y < Y0 + 50:
+        if y < Y0 + 90:
             above = False
         ty = y - 34 if above else y + 40
         anchor = "ms" if above else "ma"
@@ -519,14 +523,15 @@ def d_fork(img, t, s, ctx):
 
 
 def d_fabless(img, t, s, ctx):
-    boxes = [("NVIDIA", "Diseña el chip"), ("TSMC", "Fabrica el chip"), ("SOCIOS", "Arman placas y equipos"),
-             ("MERCADO", "PC, consolas, servidores")]
-    bw, bh, gap = 340, 220, 90
-    x0 = (W - (4 * bw + 3 * gap)) // 2
+    boxes = [tuple(b) for b in s.get("boxes", [])] or [("NVIDIA", "Diseña el chip"), ("TSMC", "Fabrica el chip"),
+                                                       ("SOCIOS", "Arman placas y equipos"), ("MERCADO", "PC, consolas, servidores")]
+    nb = len(boxes)
+    bw, bh, gap = (340, 220, 90) if nb >= 4 else (420, 220, 120)
+    x0 = (W - (nb * bw + (nb - 1) * gap)) // 2
     y = 330
     d = ImageDraw.Draw(img)
     for i, (nm, sub) in enumerate(boxes):
-        st = ctx.word_time("socios", 1.5) if i >= 1 else 0.2
+        st = ctx.word_time(s.get("sync", "socios"), 1.5) if i >= 1 else 0.2
         st = st + (i - 1) * 0.4 if i >= 1 else st
         a = appear(t, st, 0.6)
         x = x0 + i * (bw + gap)
@@ -534,13 +539,13 @@ def d_fabless(img, t, s, ctx):
         rect(img, (x, y, x + bw, y + bh), fill=ANTHRACITE, outline=col if i == 0 else LINE, width=3, alpha=a, radius=8)
         text(img, (x + bw / 2, y + 80), nm, font("sans-black", 46), col, a, anchor="mm")
         text(img, (x + bw / 2, y + 150), sub, font("sans", 26), GREY_LIGHT, a, anchor="mm")
-        if i < 3:
+        if i < nb - 1:
             aa = appear(t, st + 0.5, 0.5)
             if aa > 0:
                 ax0, ax1 = x + bw + 12, x + bw + 12 + (gap - 24) * aa
                 d.line((ax0, y + bh / 2, ax1, y + bh / 2), fill=GREY, width=4)
                 d.polygon([(ax1, y + bh / 2 - 10), (ax1 + 14, y + bh / 2), (ax1, y + bh / 2 + 10)], fill=GREY)
-    text(img, (W // 2, 660), "Modelo «fabless»: diseñar sin fabricar", font("sans-semibold", 30), GOLD, appear(t, 2.5),
+    text(img, (W // 2, 660), s.get("caption", "Modelo «fabless»: diseñar sin fabricar"), font("sans-semibold", 30), GOLD, appear(t, 2.5),
          anchor="mm")
 
 
@@ -628,8 +633,123 @@ def d_network(img, t, s, ctx):
     text(img, (xs[-1], 200), "Predicción", font("sans-semibold", 26), GREY, a, anchor="mm")
 
 
+def _box(img, x, y, w, h, title, sub, col, a, title_size=44):
+    rect(img, (x, y, x + w, y + h), fill=ANTHRACITE, outline=col, width=3, alpha=a, radius=8)
+    text(img, (x + w / 2, y + h / 2 - (18 if sub else 0)), title, font("sans-black", title_size), col, a, anchor="mm")
+    if sub:
+        text(img, (x + w / 2, y + h / 2 + 34), sub, font("sans", 24), GREY_LIGHT, a, anchor="mm")
+
+
+def _arrow(img, x0, y0, x1, y1, a, col=GREY, width=4):
+    if a <= 0:
+        return
+    d = ImageDraw.Draw(img)
+    xe, ye = x0 + (x1 - x0) * a, y0 + (y1 - y0) * a
+    d.line((x0, y0, xe, ye), fill=col, width=width)
+    ang = math.atan2(ye - y0, xe - x0)
+    pts = [(xe + 14 * math.cos(ang), ye + 14 * math.sin(ang)),
+           (xe + 10 * math.cos(ang + 2.3), ye + 10 * math.sin(ang + 2.3)),
+           (xe + 10 * math.cos(ang - 2.3), ye + 10 * math.sin(ang - 2.3))]
+    d.polygon(pts, fill=col)
+
+
+def d_secondsource(img, t, s, ctx):
+    """Un gran comprador con dos proveedores: la lógica del segundo proveedor."""
+    buyer = s.get("buyer", "IBM")
+    a0 = appear(t, 0.2)
+    _box(img, W // 2 - 220, 230, 440, 160, buyer, s.get("buyer_sub", "Comprador"), BONE, a0, 64)
+    sup = s.get("suppliers", [["Intel", "Proveedor original"], ["AMD", "Segunda fuente"]])
+    versus = s.get("versus", False)
+    for i, (nm, sub) in enumerate(sup):
+        x = 360 + i * 820
+        st = ctx.word_time(nm, 0.8 + i * 0.8) - 0.1
+        a = appear(t, st, 0.6)
+        col = (RED if versus else ACCENTS["green"]) if i == 1 else (RED if versus else GREY_LIGHT)
+        _box(img, x, 600, 380, 160, nm, sub, col, a, 56)
+        if versus:
+            text(img, (x + 190, 520), "VS", font("sans-black", 40), GREY, appear(t, st + 0.3, 0.5), anchor="mm")
+        else:
+            _arrow(img, x + 190, 595, W // 2 + (i * 2 - 1) * 120, 400, appear(t, st + 0.4, 0.6), col)
+
+
+def d_amd64(img, t, s, ctx):
+    """x86 de 32 bits contenido dentro de AMD64: extensión compatible."""
+    cx, cy = W // 2, 500
+    p = ease((t - 0.2) / 1.2)
+    a2 = appear(t, ctx.word_time("sesenta", 1.6) - 0.2, 0.8)
+    ow, oh = 560 + 520 * a2, 230 + 230 * a2
+    rect(img, (cx - ow / 2, cy - oh / 2, cx + ow / 2, cy + oh / 2), outline=ACCENTS["green"], width=4, alpha=a2, radius=10)
+    text(img, (cx - ow / 2 + 30, cy - oh / 2 + 26), "AMD64 · 64 bits", font("sans-black", 44), ACCENTS["green"], a2)
+    rect(img, (cx - 260, cy - 95, cx + 260, cy + 95), fill=ANTHRACITE, outline=GREY_LIGHT, width=3, alpha=p, radius=8)
+    text(img, (cx, cy - 18), "x86 · 32 bits", font("sans-black", 54), BONE, p, anchor="mm")
+    text(img, (cx, cy + 42), "programas existentes", font("sans", 26), GREY_LIGHT, p, anchor="mm")
+    a3 = appear(t, ctx.word_time("compatibilidad", 3.0) - 0.2, 0.6)
+    text(img, (cx, cy + oh / 2 + 60), "✓ Los programas de 32 bits siguen funcionando", font("sans-semibold", 32), BONE, a3,
+         anchor="mm")
+
+
+def d_fusion(img, t, s, ctx):
+    """CPU + GPU en un mismo chip (la visión detrás de la compra de ATI)."""
+    p = ease_io((t - 0.6) / max(1.2, ctx.dur * 0.45))
+    cy = 500
+    r = 150
+    xl = 560 + (W // 2 - 90 - 560) * p
+    xr = W - 560 - (W - 560 - (W // 2 + 90)) * p
+    a = appear(t, 0.1)
+    rect(img, (xl - r, cy - r, xl + r, cy + r), outline=BONE, width=4, alpha=a, radius=r)
+    text(img, (xl, cy), "CPU", font("sans-black", 64), BONE, a, anchor="mm")
+    text(img, (xl, cy + r + 40), "AMD", font("sans-medium", 28), GREY, a * (1 - p), anchor="mm")
+    rect(img, (xr - r, cy - r, xr + r, cy + r), outline=ACCENTS["red"] if s.get("red") else ACCENTS["blue"], width=4,
+         alpha=a, radius=r)
+    text(img, (xr, cy), "GPU", font("sans-black", 64), BONE, a, anchor="mm")
+    text(img, (xr, cy + r + 40), "ATI", font("sans-medium", 28), GREY, a * (1 - p), anchor="mm")
+    if p > 0.95:
+        text(img, (W // 2, cy + r + 70), s.get("result", "Un solo chip"), font("serif", 52), ACCENTS["green"],
+             appear(t, 0.6 + max(1.2, ctx.dur * 0.45), 0.6), anchor="mm")
+
+
+def d_split(img, t, s, ctx):
+    """Una empresa integrada que se divide en diseño y fabricación."""
+    p = ease_io((t - 1.0) / 1.4)
+    cy = 470
+    a = appear(t, 0.1)
+    w, h = 520, 220
+    xl = W // 2 - w / 2 - 330 * p
+    xr = W // 2 - w / 2 + 330 * p
+    title = s.get("from", "AMD 2008")
+    if p < 0.05:
+        _box(img, W // 2 - w / 2, cy - h / 2, w, h, title, "Diseño + fábricas propias", BONE, a, 60)
+        return
+    _box(img, xl, cy - h / 2, w, h, s.get("left", "AMD"), s.get("left_sub", "Diseño de chips"), ACCENTS["green"], 1, 60)
+    _box(img, xr, cy - h / 2, w, h, s.get("right", "GlobalFoundries"), s.get("right_sub", "Fábricas (2009)"), GREY_LIGHT,
+         1, 52)
+    text(img, (W // 2, cy + h / 2 + 80), s.get("caption", ""), font("sans-semibold", 30), GOLD, appear(t, 2.4), anchor="mm")
+
+
+def d_models(img, t, s, ctx):
+    """Modelo tercerizado (AMD) frente a modelo integrado (Intel)."""
+    rows_ = s.get("rows", [["AMD", [["Diseño", "AMD"], ["Fabricación", "TSMC"], ["Producto", "Ryzen · EPYC"]]],
+                            ["Intel", [["Diseño + fabricación", "Fábricas propias"], ["Producto", "Core · Xeon"]]]])
+    for ri, (nm, steps) in enumerate(rows_):
+        y = 250 + ri * 320
+        st = ctx.word_time(nm, 0.3 + ri * 1.6) - 0.2
+        a = appear(t, st, 0.6)
+        col = ACCENTS["green"] if ri == 0 else GREY_LIGHT
+        text(img, (MARGIN + 20, y + 80), nm, font("sans-black", 56), col, a, anchor="lm")
+        n = len(steps)
+        bw, gap = (330, 80) if n == 3 else (560, 80)
+        x0 = MARGIN + 320
+        for i, (t1, t2) in enumerate(steps):
+            ai = appear(t, st + 0.3 + i * 0.35, 0.5)
+            x = x0 + i * (bw + gap)
+            _box(img, x, y, bw, 160, t1, t2, col, ai, 36)
+            if i < n - 1:
+                _arrow(img, x + bw + 10, y + 80, x + bw + gap - 14, y + 80, appear(t, st + 0.55 + i * 0.35, 0.4))
+
+
 DIAGRAMS = {"datacenter": d_datacenter, "crowd": d_crowd, "fork": d_fork, "fabless": d_fabless, "moat": d_moat,
-            "science": d_science, "parallel": d_parallel, "network": d_network}
+            "science": d_science, "parallel": d_parallel, "network": d_network,
+            "secondsource": d_secondsource, "amd64": d_amd64, "fusion": d_fusion, "split": d_split, "models": d_models}
 
 
 # ───────────────────────────── imagen de archivo ─────────────────────────────
@@ -666,10 +786,37 @@ def r_brand(img, t, s, ctx):
          appear(t, 1.0), anchor="mm")
 
 
+def r_bars(img, t, s, ctx):
+    """Comparación proporcional de cifras (p. ej. ingresos anuales)."""
+    ctx.note = s.get("note")
+    items = s["items"]
+    vmax = max(i["value"] for i in items)
+    text(img, (MARGIN + 40, 230), tracked(s.get("title", "")), font("sans-semibold", 28), GREY_LIGHT, appear(t, 0.1))
+    x0, x1 = MARGIN + 340, W - MARGIN - 320
+    n = len(items)
+    step = min(190, 560 / max(1, n))
+    y0 = 330 + (560 - step * n) / 2
+    for k, it in enumerate(items):
+        st = ctx.word_time(str(it.get("sync", it["label"])), 0.4 + k * 0.9) - 0.15
+        p = ease((t - st) / 1.3)
+        y = y0 + k * step
+        col = ACCENTS.get(it.get("color"), BONE)
+        text(img, (MARGIN + 40, y + 45), it["label"], font("sans-black", 64), BONE, appear(t, st, 0.4), anchor="lm")
+        rect(img, (x0, y + 10, x1, y + 80), fill=(26, 28, 32), alpha=appear(t, st, 0.4))
+        wv = (x1 - x0) * it["value"] / vmax * p
+        if wv > 2:
+            rect(img, (x0, y + 10, x0 + wv, y + 80), fill=col)
+        text(img, (x0 + wv + 24, y + 45), it.get("display", ""), font("sans-bold", 44), col, appear(t, st + 0.4, 0.5),
+             anchor="lm")
+    if s.get("result"):
+        text(img, (W // 2, 930), s["result"], font("serif-italic", 46), GREY_LIGHT,
+             appear(t, ctx.word_time(s.get("result_sync", "zzzz"), ctx.dur * 0.6), 0.6), anchor="mm")
+
+
 RENDERERS = {"title": r_title, "statement": r_statement, "definition": r_definition, "invest": r_invest,
              "counter": r_counter, "checklist": r_checklist, "calendar": r_calendar, "runway": r_runway,
              "timeline": r_timeline, "location": r_location, "people": r_people, "product": r_product,
-             "chart": r_chart, "diagram": r_diagram, "image": r_image, "brand": r_brand}
+             "chart": r_chart, "diagram": r_diagram, "image": r_image, "brand": r_brand, "bars": r_bars}
 
 
 def render_frame(spec, t, ctx, fade_in=0.0, fade_out=0.0):
