@@ -33,11 +33,11 @@ def wav_duration(p: Path) -> float:
         return w.getnframes() / w.getframerate()
 
 
-def _trim_silence(p: Path):
-    """Recorta silencios del principio y del final (las pausas las controla el montaje)."""
+def _trim_silence(p: Path, head=True):
+    """Recorta silencios del final (y del principio si `head`); las pausas las controla el montaje."""
     tmp = p.with_suffix(".trim.wav")
-    af = ("silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02,"
-          "areverse,silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse")
+    tail = "areverse,silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse"
+    af = ("silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02," + tail) if head else tail
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(p), "-af", af, str(tmp)], check=True)
     tmp.replace(p)
 
@@ -89,7 +89,9 @@ def synthesize(text: str, cfg: dict, engine: str, cache: Path):
                     raise
         _to_wav(mp3, wav)
         mp3.unlink(missing_ok=True)
-        # edge no agrega silencio inicial significativo; conservamos las marcas tal cual
+        # edge agrega ~1 s de silencio al final de cada clip; el inicio se conserva para no
+        # desplazar las marcas por palabra
+        _trim_silence(wav, head=False)
     else:
         raw = cache / f"{key}.raw.wav"
         _piper(text, raw)

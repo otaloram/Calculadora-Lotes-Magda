@@ -14,7 +14,7 @@ target_duration: [290, 315]
 thumbnail: {line1: "NVIDIA", line2: "Dos derrumbes antes de la IA", big: "−90 %"}
 voice:
   edge: es-AR-TomasNeural     # masculina, rioplatense
-  rate: "-4%"
+  rate: "+0%"
   pitch: "-2Hz"
 pause: 0.35                    # silencio entre escenas (s)
 
